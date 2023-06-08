@@ -43,8 +43,8 @@ data = read.csv('Merge_all_2010_2020.csv')
 # extracting columns to use from data 
 extractedData =  data[, c(1, 2, 3, 13)]
 
-# display head of data 
-head(extractedData)
+# head of data 
+extractedDataHead = head(extractedData)
 
 ```
 
@@ -84,14 +84,17 @@ kable(summaryExtractDataArray, format = "html", align = "c") %>% kable_styling(b
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
+# loading world map 
 worldMap = map_data("world")
 
+# selecting specific year 2018
 extractedData2018 = filter(extractedData, Year == 2018)
 
 worldMap $ iso3c = countrycode(worldMap$region, 'country.name', 'iso3c')
 
 extractedData2018Map = left_join(worldMap, extractedData2018, by = c("iso3c" = "Code"))
 
+# heat map based on total alcohol consumption in 2018 
 dataMap = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total.alcohol.consumption.per.capita..liters.of.pure.alcohol..projected.estimates..15..years.of.age..y), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2018 Alcohol Consumption per Capita")
 
 dataMap
@@ -105,12 +108,16 @@ dataMap
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
+# filtering extracted data by total alcohol consumption in 2018
 topCountryExtractedData2018 = extractedData2018 %>% group_by(Entity) %>% summarize(Total = sum(Total.alcohol.consumption.per.capita..liters.of.pure.alcohol..projected.estimates..15..years.of.age..y))
 
+# arranging countries in highest order
 topCountryExtractedData2018 = arrange(topCountryExtractedData2018, desc(Total))
 
+# grabbing the top 20 countries 
 topCountryExtractedData2018 = head(topCountryExtractedData2018, 20)
 
+# bar chart of the top 20 countries of alcohol consumption in 2018 
 top20Bar = ggplot(topCountryExtractedData2018, aes(x = Entity, y = Total, color = Entity)) + geom_bar(stat = "identity", fill = "white") + labs(title = "Top 20 Countries by Alcohol Consumption in 2018", x = "Countries", y = "Alcohol Consumed (Litres)") + theme_minimal() + scale_x_discrete(guide = guide_axis(angle = 30)) + theme(legend.position = "none")
 
 top20Bar
