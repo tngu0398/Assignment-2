@@ -78,3 +78,37 @@ kable(summaryExtractDataArray, format = "html", align = "c") %>% kable_styling(b
 ```
 
 
+---
+
+**Figure 1** 
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+
+worldMap = map_data("world")
+
+extractedData2018 = filter(extractedData, Year == 2018)
+
+worldMap $ iso3c = countrycode(worldMap$region, 'country.name', 'iso3c')
+
+extractedData2018Map = left_join(worldMap, extractedData2018, by = c("iso3c" = "Code"))
+
+dataMap = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total.alcohol.consumption.per.capita..liters.of.pure.alcohol..projected.estimates..15..years.of.age..y), color = "black") + coord_equal() + theme_void() + scale_fill_gradient(low = "white", high = "darkred", name = "INSERT NAME") + labs(title = "INSERT TITLE")
+
+dataMap
+
+```
+
+
+
+
+
+---
+
+**Figure 2** 
+
+```{r}
+
+```
+
+
+
