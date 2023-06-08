@@ -92,21 +92,20 @@ worldMap $ iso3c = countrycode(worldMap$region, 'country.name', 'iso3c')
 
 extractedData2018Map = left_join(worldMap, extractedData2018, by = c("iso3c" = "Code"))
 
-dataMap = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total.alcohol.consumption.per.capita..liters.of.pure.alcohol..projected.estimates..15..years.of.age..y), color = "black") + coord_equal() + theme_void() + scale_fill_gradient(low = "white", high = "darkred", name = "INSERT NAME") + labs(title = "INSERT TITLE")
+dataMap = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total.alcohol.consumption.per.capita..liters.of.pure.alcohol..projected.estimates..15..years.of.age..y), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2018 Alcohol Consumption per Capita")
 
 dataMap
 
 ```
 
 
-
-
-
 ---
 
 **Figure 2** 
 
-```{r}
+```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+
+
 
 ```
 
