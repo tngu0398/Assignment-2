@@ -48,6 +48,7 @@ head(extractedData)
 
 ```
 
+
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # get classes from extracted data  
@@ -57,6 +58,22 @@ extractedDataClasses = data.frame(Variables = extractedDataClass)
 
 # display classes using kable()
 kable(extractedDataClasses, format = "html", align = "c") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+
+```
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+
+# summary of extracted data 
+summaryExtractData = summary(extractedData$Total.alcohol.consumption.per.capita..liters.of.pure.alcohol..projected.estimates..15..years.of.age..y)
+
+summaryExtractDataArray = as.array(summaryExtractData)
+
+summaryExtractedData = data.frame(Statistics = rownames(summaryExtractDataArray), Values = summaryExtractDataArray, stringsAsFactors = FALSE)
+
+# NEED TO CHANGE COLUMN NAMES
+
+kable(summaryExtractDataArray, format = "html", align = "c") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
 ```
 
