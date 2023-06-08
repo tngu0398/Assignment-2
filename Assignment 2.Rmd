@@ -105,7 +105,15 @@ dataMap
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
+topCountryExtractedData2018 = extractedData2018 %>% group_by(Entity) %>% summarize(Total = sum(Total.alcohol.consumption.per.capita..liters.of.pure.alcohol..projected.estimates..15..years.of.age..y))
 
+topCountryExtractedData2018 = arrange(topCountryExtractedData2018, desc(Total))
+
+topCountryExtractedData2018 = head(topCountryExtractedData2018, 20)
+
+top20Bar = ggplot(topCountryExtractedData2018, aes(x = Entity, y = Total, color = Entity)) + geom_bar(stat = "identity", fill = "white") + labs(title = "Top 20 Countries by Alcohol Consumption in 2018", x = "Countries", y = "Alcohol Consumed (Litres)") + theme_minimal() + scale_x_discrete(guide = guide_axis(angle = 30)) + theme(legend.position = "none")
+
+top20Bar
 
 ```
 
