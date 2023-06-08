@@ -28,3 +28,13 @@ library(countrycode)
 knitr::opts_chunk$set(echo = TRUE)
 
 ```
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+
+# read in data set 
+data = read.csv('Merge_all_2010_2020.csv')
+
+```
+
+
