@@ -43,8 +43,11 @@ data = read.csv('Merge_all_2010_2020_updated.csv')
 # extracting columns to use from data 
 extractedData =  data[, c(1, 2, 3, 12)]
 
+# omit NA values
+newExtractedData = na.omit(extractedData)
+
 # head of data 
-extractedDataHead = head(extractedData)
+extractedDataHead = head(newExtractedData)
 
 ```
 
@@ -52,7 +55,7 @@ extractedDataHead = head(extractedData)
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # get classes from extracted data  
-extractedDataClass = names(extractedData)
+extractedDataClass = names(newExtractedData)
 
 extractedDataClasses = data.frame(Variables = extractedDataClass)
 
@@ -62,20 +65,70 @@ kable(extractedDataClasses, format = "html", align = "c") %>% kable_styling(boot
 ```
 
 
+
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
-# summary of extracted data 
-summaryExtractData = summary(extractedData$Total_alcohol_consumption_per_capita)
+# 2000 data
+y2000 = newExtractedData[newExtractedData $ Year == 2000, ]
 
-summaryExtractDataArray = as.array(summaryExtractData)
+year2000Total = summary(y2000 $ Total_alcohol_consumption_per_capita)
 
-summaryExtractedData = data.frame(Statistics = rownames(summaryExtractDataArray), Values = summaryExtractDataArray, stringsAsFactors = FALSE)
+year2000TotalArray = as.array(year2000Total)
 
-# NEED TO CHANGE COLUMN NAMES
+year2000TotalData = data.frame(Statistics = rownames(year2000TotalArray), Values = year2000TotalArray, stringsAsFactors = FALSE)
 
-kable(summaryExtractDataArray, format = "html", align = "c") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+
+# 2005 data
+y2005 = newExtractedData[newExtractedData $ Year == 2005, ]
+
+year2005Total = summary(y2005 $ Total_alcohol_consumption_per_capita)
+
+year2005TotalArray = as.array(year2005Total)
+
+year2005TotalData = data.frame(Statistics = rownames(year2005TotalArray), Values = year2005TotalArray, stringsAsFactors = FALSE)
+
+
+# 2010 data
+y2010 = newExtractedData[newExtractedData $ Year == 2010, ]
+
+year2010Total = summary(y2010 $ Total_alcohol_consumption_per_capita)
+
+year2010TotalArray = as.array(year2010Total)
+
+year2010TotalData = data.frame(Statistics = rownames(year2010TotalArray), Values = year2010TotalArray, stringsAsFactors = FALSE)
+
+
+# 2015 data
+y2015 = newExtractedData[newExtractedData $ Year == 2015, ]
+
+year2015Total = summary(y2015 $ Total_alcohol_consumption_per_capita)
+
+year2015TotalArray = as.array(year2015Total)
+
+year2015TotalData = data.frame(Statistics = rownames(year2015TotalArray), Values = year2015TotalArray, stringsAsFactors = FALSE)
+
+
+# 2018 data
+y2018 = newExtractedData[newExtractedData $ Year == 2018, ]
+
+year2018Total = summary(y2018 $ Total_alcohol_consumption_per_capita)
+
+year2018TotalArray = as.array(year2018Total)
+
+year2018TotalData = data.frame(Statistics = rownames(year2018TotalArray), Values = year2018TotalArray, stringsAsFactors = FALSE)
+
+
+# combining columns 
+totalCombinedSummary = cbind(year2000TotalData$Statistics, year2000TotalData$Values.Freq, year2005TotalData$Values.Freq, year2010TotalData$Values.Freq, year2015TotalData$Values.Freq, year2018TotalData$Values.Freq)
+
+# renaming columns 
+colnames(totalCombinedSummary) = c("Statistics", "2000", "2005", "2010", "2015", "2018")
+
+# presenting using kable()
+kable(totalCombinedSummary, format = "html", align = "c") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
 ```
+
 
 
 ---
@@ -88,7 +141,7 @@ kable(summaryExtractDataArray, format = "html", align = "c") %>% kable_styling(b
 worldMap = map_data("world")
 
 # selecting specific year 2018
-extractedData2018 = filter(extractedData, Year == 2018)
+extractedData2018 = filter(newExtractedData, Year == 2018)
 
 worldMap $ iso3c = countrycode(worldMap$region, 'country.name', 'iso3c')
 
@@ -111,7 +164,7 @@ dataMap
 # filtering extracted data by total alcohol consumption in 2018
 topCountryExtractedData2018 = extractedData2018 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
 
-# arranging countries in highest order
+# arranging countries in alphabetical order
 topCountryExtractedData2018 = arrange(topCountryExtractedData2018, desc(Total))
 
 # grabbing the top 20 countries 
@@ -123,6 +176,4 @@ top20Bar = ggplot(topCountryExtractedData2018, aes(x = Entity, y = Total, color 
 top20Bar
 
 ```
-
-
 
