@@ -33,7 +33,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # read in data set 
-data = read.csv('Merge_all_2010_2020.csv')
+data = read.csv('Merge_all_2010_2020_updated.csv')
 
 ```
 
@@ -41,7 +41,7 @@ data = read.csv('Merge_all_2010_2020.csv')
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # extracting columns to use from data 
-extractedData =  data[, c(1, 2, 3, 13)]
+extractedData =  data[, c(1, 2, 3, 12)]
 
 # head of data 
 extractedDataHead = head(extractedData)
@@ -65,7 +65,7 @@ kable(extractedDataClasses, format = "html", align = "c") %>% kable_styling(boot
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # summary of extracted data 
-summaryExtractData = summary(extractedData$Total.alcohol.consumption.per.capita..liters.of.pure.alcohol..projected.estimates..15..years.of.age..y)
+summaryExtractData = summary(extractedData$Total_alcohol_consumption_per_capita)
 
 summaryExtractDataArray = as.array(summaryExtractData)
 
@@ -95,7 +95,7 @@ worldMap $ iso3c = countrycode(worldMap$region, 'country.name', 'iso3c')
 extractedData2018Map = left_join(worldMap, extractedData2018, by = c("iso3c" = "Code"))
 
 # heat map based on total alcohol consumption in 2018 
-dataMap = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total.alcohol.consumption.per.capita..liters.of.pure.alcohol..projected.estimates..15..years.of.age..y), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2018 Alcohol Consumption per Capita")
+dataMap = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2018 Alcohol Consumption per Capita")
 
 dataMap
 
@@ -109,7 +109,7 @@ dataMap
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # filtering extracted data by total alcohol consumption in 2018
-topCountryExtractedData2018 = extractedData2018 %>% group_by(Entity) %>% summarize(Total = sum(Total.alcohol.consumption.per.capita..liters.of.pure.alcohol..projected.estimates..15..years.of.age..y))
+topCountryExtractedData2018 = extractedData2018 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
 
 # arranging countries in highest order
 topCountryExtractedData2018 = arrange(topCountryExtractedData2018, desc(Total))
