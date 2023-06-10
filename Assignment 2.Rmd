@@ -52,8 +52,8 @@ extractedDataHead = head(newExtractedData)
 ```
 
 Research Questions:   
-- How has the total alcohol consumption per capita changed over time in relation to geographical regions?    
-- How does the influence of religion relate to variations in total alcohol consumption per capita across different countries?
+- How has the total alcohol consumption per capita changed over time in relation to geographical regions?        
+- How does the influence of religion relate to variations in total alcohol consumption per capita across different countries?     
 
 ---
 
@@ -67,7 +67,7 @@ extractedDataClass = names(newExtractedData)
 extractedDataClasses = data.frame(Variables = extractedDataClass)
 
 # display classes using kable()
-kable(extractedDataClasses, format = "html", align = "c") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+kable(extractedDataClasses, format = "html", align = "c") %>% kable_styling(bootstrap_options = c("striped", "hover"))
 
 ```
 
@@ -144,7 +144,7 @@ kable(totalCombinedSummary, format = "html", align = "c") %>% kable_styling(boot
 
 **Figure 1**      
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE, fig.width = 6, fig.height = 4}
 
 # selecting specific regions 
 specifiedRegions = c("World", "East Asia and Pacific", "Europe and Central Asia", "Latin America and Caribbean", "Middle East and North Africa", "North America", "South Asia", "Sub-Saharan Africa")
@@ -158,27 +158,83 @@ regionChart
 
 ```
 
+The line chart presents the total alcohol consumption by geographical regions over the years (2000 to 2018). The dot-dashed line represents the World's average total alcohol consumption each year  
+
+- There has been a significant decrease of total alcohol consumption from the 'Europe and Central Asia' region and an overall slight decrease from 'Latin America and Caribbean' and 'Sub-Saharan Africa' regions in this time period.     
+
+- The regions 'East Asia and Pacific' and 'South Asia' both experienced rapid growth during this time frame but especially between 2005 and 2010. 
+
+- While regions 'North America' and 'Middle East and North Africa' both slightly increased in total alcohol consumption from 2000 to 2018, the 'Middle East and North Africa' region is still the lowest overall, averaging less than 1L of alcohol consumed each year.     
+
+From the data collected, we can see that there is an overall increase in alcohol consumption globally. However, there are regions that have significantly decreased in consumption, which can be related to an increase in modern research of how alcohol can be detrimental to health. Moreover, we can see that the region 'Middle East and North Africa' is the lowest region in alcohol consumption which may be attributed to the region's religious beliefs and values. 
+
 
 ---
 
 **Figure 2**     
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE, fig.width = 6, fig.height = 4}
 
 # loading world map 
 worldMap = map_data("world")
 
-# selecting specific year 2018
-extractedData2018 = filter(newExtractedData, Year == 2018)
+# selecting specific year 2000
+extractedData2000 = filter(newExtractedData, Year == 2000)
 
 worldMap $ iso3c = countrycode(worldMap$region, 'country.name', 'iso3c')
+
+extractedData2000Map = left_join(worldMap, extractedData2000, by = c("iso3c" = "Code"))
+
+# heat map based on total alcohol consumption in 2000 
+dataMap2000 = ggplot() + geom_map(data = extractedData2000Map, map = extractedData2000Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2000 Alcohol Consumption per Capita")
+
+
+# selecting specific year 2005
+extractedData2005 = filter(newExtractedData, Year == 2005)
+
+extractedData2005Map = left_join(worldMap, extractedData2005, by = c("iso3c" = "Code"))
+
+# heat map based on total alcohol consumption in 2005 
+dataMap2005 = ggplot() + geom_map(data = extractedData2005Map, map = extractedData2005Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2005 Alcohol Consumption per Capita")
+
+
+# selecting specific year 2010
+extractedData2010 = filter(newExtractedData, Year == 2010)
+
+extractedData2010Map = left_join(worldMap, extractedData2010, by = c("iso3c" = "Code"))
+
+# heat map based on total alcohol consumption in 2010 
+dataMap2010 = ggplot() + geom_map(data = extractedData2010Map, map = extractedData2010Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2010 Alcohol Consumption per Capita")
+
+
+# selecting specific year 2015
+extractedData2015 = filter(newExtractedData, Year == 2015)
+
+extractedData2015Map = left_join(worldMap, extractedData2015, by = c("iso3c" = "Code"))
+
+# heat map based on total alcohol consumption in 2015 
+dataMap2015 = ggplot() + geom_map(data = extractedData2015Map, map = extractedData2015Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2015 Alcohol Consumption per Capita")
+
+
+# selecting specific year 2018
+extractedData2018 = filter(newExtractedData, Year == 2018)
 
 extractedData2018Map = left_join(worldMap, extractedData2018, by = c("iso3c" = "Code"))
 
 # heat map based on total alcohol consumption in 2018 
-dataMap = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2018 Alcohol Consumption per Capita")
+dataMap2018 = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2018 Alcohol Consumption per Capita")
 
-dataMap
+
+# display graphs using par()
+par(mfrow = c(3, 2))
+plot(dataMap2000)
+plot(dataMap2005)
+plot(dataMap2010)
+plot(dataMap2015)
+plot(dataMap2018)
 
 ```
+
+The heat maps present the data of alcohol consumption per capita in 2000, 2005, 2010, 2015 and 2018.  
+
 
