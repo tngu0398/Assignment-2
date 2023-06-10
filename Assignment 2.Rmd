@@ -51,6 +51,10 @@ extractedDataHead = head(newExtractedData)
 
 ```
 
+Research Questions:   
+- How has the total alcohol consumption per capita changed over time in relation to geographical regions?    
+- How does the influence of religion relate to variations in total alcohol consumption per capita across different countries?
+
 ---
 
 **Variable Class** 
@@ -138,7 +142,26 @@ kable(totalCombinedSummary, format = "html", align = "c") %>% kable_styling(boot
 
 ---
 
-**Figure 1** 
+**Figure 1**      
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+
+# selecting specific regions 
+specifiedRegions = c("World", "East Asia and Pacific", "Europe and Central Asia", "Latin America and Caribbean", "Middle East and North Africa", "North America", "South Asia", "Sub-Saharan Africa")
+
+specifiedRegionsData = newExtractedData %>% filter(Entity %in% specifiedRegions)
+
+# create chart with World being a dotdash line type 
+regionChart = ggplot(specifiedRegionsData, aes(x = Year, y = Total_alcohol_consumption_per_capita, group = Entity, color = Entity)) + geom_line(aes(linetype= if_else(Entity == "World", "solid", "dotdash"))) + geom_point() + labs(x = "Year", y = "Alcohol Consumption in Litres", title = "Total Alcohol Consumption by Geographical Region") + scale_linetype_manual(values = c("solid", "dotdash"), guide = FALSE) + theme_minimal()
+
+regionChart
+
+```
+
+
+---
+
+**Figure 2**     
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
@@ -156,29 +179,6 @@ extractedData2018Map = left_join(worldMap, extractedData2018, by = c("iso3c" = "
 dataMap = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2018 Alcohol Consumption per Capita")
 
 dataMap
-
-```
-
-
----
-
-**Figure 2** 
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
-
-# filtering extracted data by total alcohol consumption in 2018
-topCountryExtractedData2018 = extractedData2018 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
-
-# arranging countries in alphabetical order
-topCountryExtractedData2018 = arrange(topCountryExtractedData2018, desc(Total))
-
-# grabbing the top 20 countries 
-topCountryExtractedData2018 = head(topCountryExtractedData2018, 20)
-
-# bar chart of the top 20 countries of alcohol consumption in 2018 
-top20Bar = ggplot(topCountryExtractedData2018, aes(x = Entity, y = Total, color = Entity)) + geom_bar(stat = "identity", fill = "white") + labs(title = "Top 20 Countries by Alcohol Consumption in 2018", x = "Countries", y = "Alcohol Consumed (Litres)") + theme_minimal() + scale_x_discrete(guide = guide_axis(angle = 30)) + theme(legend.position = "none")
-
-top20Bar
 
 ```
 
