@@ -229,6 +229,8 @@ plot(dataMap2018)
 
 **Table 2**     
 
+<i>Table 2</i> presents the lowest 10 countries in 2000, 2005, 2010, 2015 and 2018 in alcohol consumption 
+
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # calculating the total alcohol consumption in 2000
@@ -238,7 +240,7 @@ total2000 = extractedData2000 %>% group_by(Entity) %>% summarize(Total = sum(Tot
 topTotal2000 = arrange(total2000, desc(Total))
 
 # selecting the bottom 15 countries in 2000
-tailTotal2000 = tail(topTotal2000, 15)
+tailTotal2000 = tail(topTotal2000, 10)
 
 
 # calculating the total alcohol consumption in 2005
@@ -248,7 +250,7 @@ total2005 = extractedData2005 %>% group_by(Entity) %>% summarize(Total = sum(Tot
 topTotal2005 = arrange(total2005, desc(Total))
 
 # selecting the bottom 15 countries in 2005
-tailTotal2005 = tail(topTotal2005, 15)
+tailTotal2005 = tail(topTotal2005, 10)
 
 
 # calculating the total alcohol consumption in 2010
@@ -258,7 +260,7 @@ total2010 = extractedData2010 %>% group_by(Entity) %>% summarize(Total = sum(Tot
 topTotal2010 = arrange(total2010, desc(Total))
 
 # selecting the bottom 15 countries in 2010
-tailTotal2010 = tail(topTotal2010, 15)
+tailTotal2010 = tail(topTotal2010, 10)
 
 
 # calculating the total alcohol consumption in 2015
@@ -268,7 +270,7 @@ total2015 = extractedData2015 %>% group_by(Entity) %>% summarize(Total = sum(Tot
 topTotal2015 = arrange(total2015, desc(Total))
 
 # selecting the bottom 15 countries in 2015
-tailTotal2015 = tail(topTotal2015, 15)
+tailTotal2015 = tail(topTotal2015, 10)
 
 
 # calculating the total alcohol consumption in 2018
@@ -278,7 +280,7 @@ total2018 = extractedData2018 %>% group_by(Entity) %>% summarize(Total = sum(Tot
 topTotal2018 = arrange(total2018, desc(Total))
 
 # selecting the bottom 15 countries in 2018
-tailTotal2018 = tail(topTotal2018, 15)
+tailTotal2018 = tail(topTotal2018, 10)
 
 
 # combining the data for each year into one 
@@ -291,7 +293,7 @@ combinedData = pivot_wider(data = combinedData, id_cols = Entity, names_from = Y
 combinedData = combinedData %>% mutate(across(everything(), as.character)) %>% replace_na(list(`2000` = '-', `2005` = '-', `2010` = '-', `2015` = '-', `2018` = '-'))
 
 # display table using kable()
-kable(combinedData, format = "html", align = "c", caption = "Bottom 15 Countries in Alcohol Consumption (Litres)") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+kable(combinedData, format = "html", align = "c", caption = "Bottom 10 Countries in Alcohol Consumption (Litres)") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
 ```
 
@@ -304,7 +306,9 @@ kable(combinedData, format = "html", align = "c", caption = "Bottom 15 Countries
 
 <i>Table 1</i> provided insights of the average (6.18L) and median (6.11L) alcohol consumption in 2010, this year stands as the highest in total consumption. Similarly, <i>Figure 2</i> presents the visual depiction of countries around the world reaching their highest in 2010, followed by subsequent decrease.      
 
-<i>Figure 1</i> highlighted the region 'Middle East and North Africa' as having had experienced the least growth and changes from 2000 to 2018 in comparison to the others. Notably, 'Middle East and North Africa' consistently exhibited the lowest alcohol consumption (consuming less than 1L each year). Similarly, <i>Figure 2</i> shows the geographical locations: the Middle East, North Africa and the Greater Indonesia to have had minor changes over the years.      
+<i>Figure 1</i> highlighted the region 'Middle East and North Africa' as having had experienced the least growth and changes from 2000 to 2018 in comparison to the others. Notably, 'Middle East and North Africa' consistently exhibited the lowest alcohol consumption (consuming less than 1L each year). Similarly, <i>Figure 2</i> shows the geographical locations: the Middle East, North Africa and the Greater Indonesia to have had minor changes over the years. 
 
-Although the impact of religious beliefs on alcohol consumption cannot be definitively determined without further global religious information, <i>Figure 1</i> and <i>Figure 2</i> suggest that these locations (the Middle East, North Africa and the Greater Indonesia) may experience lower alcohol consumption due to Islamic values.     
+<i>Table 2</i> demonstrates consistency among the lowest 10 countries in alcohol consumption over the years, with only minor variations. Interestingly, a significant number of these countries are known for their devotion of Islamic values.
+
+Although the impact of religion on alcohol consumption cannot be definitively determined without further global religious information, <i>Figure 1</i>, <i>Table 2</i> and <i>Figure 2</i> suggest that these locations (the Middle East, North Africa and the Greater Indonesia) may experience lower alcohol consumption due to religious beliefs.     
 
