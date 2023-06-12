@@ -52,30 +52,12 @@ Research Questions:
 - How has the total alcohol consumption per capita changed over time in relation to geographical regions?        
 - How does the influence of religion relate to variations in total alcohol consumption per capita across different locations?     
 
+
 ---
 
 **Table 1**     
 
-<i>Table 1</i> presents the variables utilised in the analysis of this section    
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
-
-# get classes from extracted data  
-extractedDataClass = names(newExtractedData)
-
-extractedDataClasses = data.frame(Variables = extractedDataClass)
-
-# display classes using kable()
-kable(extractedDataClasses, format = "html", align = "c") %>% kable_styling(bootstrap_options = c("striped", "hover"))
-
-```
-
-
----
-
-**Table 2**     
-
-<i>Table 2</i> displays the IQR, the range, Mean and Median values of total alcohol consumption in 2000, 2005, 2010, 2015 and 2018     
+<i>Table 1</i> displays the IQR, the range, Mean and Median values of total alcohol consumption in 2000, 2005, 2010, 2015 and 2018     
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
@@ -136,7 +118,7 @@ totalCombinedSummary = cbind(year2000TotalData$Statistics, year2000TotalData$Val
 colnames(totalCombinedSummary) = c("Statistics", "2000", "2005", "2010", "2015", "2018")
 
 # presenting using kable()
-kable(totalCombinedSummary, format = "html", align = "c") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+kable(totalCombinedSummary, format = "html", align = "c", caption = "Alcohol Consumption Statistics throughout the Years") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
 ```
 
@@ -245,11 +227,82 @@ plot(dataMap2018)
 
 ---
 
+**Table 2**     
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+
+# calculating the total alcohol consumption in 2000
+total2000 = extractedData2000 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
+
+# arranging total consumption in descending order
+topTotal2000 = arrange(total2000, desc(Total))
+
+# selecting the bottom 15 countries in 2000
+tailTotal2000 = tail(topTotal2000, 15)
+
+
+# calculating the total alcohol consumption in 2005
+total2005 = extractedData2005 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
+
+# arranging total consumption in descending order
+topTotal2005 = arrange(total2005, desc(Total))
+
+# selecting the bottom 15 countries in 2005
+tailTotal2005 = tail(topTotal2005, 15)
+
+
+# calculating the total alcohol consumption in 2010
+total2010 = extractedData2010 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
+
+# arranging total consumption in descending order
+topTotal2010 = arrange(total2010, desc(Total))
+
+# selecting the bottom 15 countries in 2010
+tailTotal2010 = tail(topTotal2010, 15)
+
+
+# calculating the total alcohol consumption in 2015
+total2015 = extractedData2015 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
+
+# arranging total consumption in descending order
+topTotal2015 = arrange(total2015, desc(Total))
+
+# selecting the bottom 15 countries in 2015
+tailTotal2015 = tail(topTotal2015, 15)
+
+
+# calculating the total alcohol consumption in 2018
+total2018 = extractedData2018 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
+
+# arranging total consumption in descending order
+topTotal2018 = arrange(total2018, desc(Total))
+
+# selecting the bottom 15 countries in 2018
+tailTotal2018 = tail(topTotal2018, 15)
+
+
+# combining the data for each year into one 
+combinedData = bind_rows(mutate(tailTotal2000, Year = 2000), mutate(tailTotal2005, Year = 2005), mutate(tailTotal2010, Year = 2010), mutate(tailTotal2015, Year = 2015), mutate(tailTotal2018, Year = 2018))
+
+# creating separate columns for each year
+combinedData = pivot_wider(data = combinedData, id_cols = Entity, names_from = Year, values_from = Total)
+
+# converting to character type and replacing NA values with '-'
+combinedData = combinedData %>% mutate(across(everything(), as.character)) %>% replace_na(list(`2000` = '-', `2005` = '-', `2010` = '-', `2015` = '-', `2018` = '-'))
+
+# display table using kable()
+kable(combinedData, format = "html", align = "c", caption = "Bottom 15 Countries in Alcohol Consumption (Litres)") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+
+```
+
+
+---
+
 **Analysis**     
 
-<i>Table 2</i> presented the overall median global growth of alcohol consumption from 2000 to 2018. However, <i>Figure 1</i> revealed that regions were still experiencing diverging patterns during this period. Regions such as 'East Asia and Pacific', 'South Asia', 'North America' and 'Middle East and North Africa' increased in alcohol consumption, while other regions like 'Europe and Central Asia', 'Latin America and Caribbean' and 'Sub-Saharan Africa' experienced declines.      
+<i>Table 1</i> presented the overall median global growth of alcohol consumption from 2000 to 2018. However, <i>Figure 1</i> revealed that regions were still experiencing diverging patterns during this period. Regions such as 'East Asia and Pacific', 'South Asia', 'North America' and 'Middle East and North Africa' increased in alcohol consumption, while other regions like 'Europe and Central Asia', 'Latin America and Caribbean' and 'Sub-Saharan Africa' experienced declines.      
 
-<i>Table 2</i> provided insights of the average (6.18L) and median (6.11L) alcohol consumption in 2010, this year stands as the highest in total consumption. Similarly, <i>Figure 2</i> presents the visual depiction of countries around the world reaching their highest in 2010, followed by subsequent decrease.      
+<i>Table 1</i> provided insights of the average (6.18L) and median (6.11L) alcohol consumption in 2010, this year stands as the highest in total consumption. Similarly, <i>Figure 2</i> presents the visual depiction of countries around the world reaching their highest in 2010, followed by subsequent decrease.      
 
 <i>Figure 1</i> highlighted the region 'Middle East and North Africa' as having had experienced the least growth and changes from 2000 to 2018 in comparison to the others. Notably, 'Middle East and North Africa' consistently exhibited the lowest alcohol consumption (consuming less than 1L each year). Similarly, <i>Figure 2</i> shows the geographical locations: the Middle East, North Africa and the Greater Indonesia to have had minor changes over the years.      
 
