@@ -1,30 +1,197 @@
 ---
-title: "Assignment 2"
-authors: "Tony Nguyen, Jane Nguyen, Shiyuan Zhang, Naveed Aamir"
-date: "2023-06-07"
+title: "Alcohol"
+author: "Naveed Aamir"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r installPackages, echo=FALSE}
+install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+install.packages("knitr", repos = "http://cran.us.r-project.org")
+install.packages("readr", repos = "http://cran.us.r-project.org")
+install.packages("dplyr", repos = "http://cran.us.r-project.org")
+install.packages("broom", repos = "http://cran.us.r-project.org")
+install.packages("forecast", repos = "http://cran.us.r-project.org")
+install.packages("repr", repos = "http://cran.us.r-project.org")
+install.packages("lubridate", repos = "http://cran.us.r-project.org")
+install.packages("janitor", repos = "http://cran.us.r-project.org")
+# *****
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r loadLibraries, echo=FALSE}
+# load the required libraries
+library(tidyverse, quietly = T)
+library(knitr, quietly = T)
+library(readr, quietly = T)
+library(dplyr, quietly = T)
+library(broom, quietly = T)
+library(forecast, quietly = T)
+library(repr, quietly = T)
+library(lubridate, quietly = T)
+library(janitor, quietly = T)
+# *****
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# ASSESSMENT 2 
+
+
+
+## INTRODUCTION
+
+
+
+# Section Naveed {.tabset}
+
+
+## Question 1
+
+
+
+
+
+## Question 2
+
+
+
+```{r readData and review, echo=FALSE}
+# Read data and review
+alcohol <- read.csv("Data/alcohol.csv")
+
+# scatter plot of consumption vs income
+year18 <- filter(alcohol, Year == 2018)
+
+options(scipen = 999)
+
+sp <- ggplot(data = year18, aes(x = GDP_per_capita, y = Total_alcohol_consumption_per_capita)) +
+  geom_point() + scale_x_continuous(trans = 'log10')
+sp
+# *****
+```
+
+```{r}
+# select variables for regression
+selected.var <- c(4, 6, 11, 12)
+# partition data
+set.seed(1)  # set seed for reproducing the partition
+train.index <- sample(c(1:3619), 2000) 
+train.df <- alcohol[train.index, selected.var]
+test.df <- alcohol[-train.index, selected.var]
+
+# death regress on consumption, income and alcohol household expense
+death_m <- lm(Death_alcohol_use_disorders ~., data = train.df)
+options(scipen = 999)
+summary(death_m)
+
+# death model for the UK
+death_uk <- filter(alcohol, Entity == "United Kingdom")
+
+# select variables for regression of death on consumption
+selected.var2 <- c(11, 12)
+# partition data
+set.seed(1)  # set seed for reproducing the partition
+train.index <- sample(c(1:3619), 2000) 
+train.df <- alcohol[train.index, selected.var2]
+test.df <- alcohol[-train.index, selected.var2]
+
+# death regress on consumption
+death_m2 <- lm(Death_alcohol_use_disorders ~., data = train.df)
+options(scipen = 999)
+summary(death_m2)
+
+# select variables for regression of death on income
+selected.var3 <- c(4, 11)
+# partition data
+set.seed(1)  # set seed for reproducing the partition
+train.index <- sample(c(1:3619), 2000) 
+train.df <- alcohol[train.index, selected.var3]
+test.df <- alcohol[-train.index, selected.var3]
+
+# death regress on income
+death_m3 <- lm(Death_alcohol_use_disorders ~., data = train.df)
+options(scipen = 999)
+summary(death_m3)
+
+# select variables for regression of death on alcohol household expense rate
+selected.var4 <- c(6, 11)
+# partition data
+set.seed(1)  # set seed for reproducing the partition
+train.index <- sample(c(1:3619), 2000) 
+train.df <- alcohol[train.index, selected.var4]
+test.df <- alcohol[-train.index, selected.var4]
+
+# death regress on alcohol household expense rate
+death_m4 <- lm(Death_alcohol_use_disorders ~., data = train.df)
+options(scipen = 999)
+summary(death_m4)
+
+# wrangling data
+countries_2015 <- filter(alcohol, Year == 2015) %>% select(Entity, Death_alcohol_use_disorders, Total_alcohol_consumption_per_capita, GDP_per_capita, Alcohol_expenditure_rate_per_household) 
+
+# countries with highest percentage of alcohol related deaths in 2015
+countries_deaths <- arrange(countries_2015, desc(Death_alcohol_use_disorders))
+# *****
+```
+
+
+
+
+# Section Jane {.tabset}
+
+
+## Question 1
+
+
+
+
+
+
+
+
+## Question 2
+
+
+
+
+
+# Section Tony {.tabset}
+
+
+## Question 1
+
+
+
+
+## Question 2
+
+
+
+# Section Gloria {.tabset}
+
+
+## Question 1
+
+
+
+
+## Question 2
+
+
+
+
+# Conclusion
+
+
+
+
+# References
+
+
+
+
+# Appendix
+
