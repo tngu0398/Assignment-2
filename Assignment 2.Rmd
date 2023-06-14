@@ -43,6 +43,12 @@ library(janitor, quietly = T)
 
 ## INTRODUCTION
 
+```{r readData and review, echo=FALSE}
+# Read data and review
+alcohol <- read.csv("Data/alcohol.csv")
+# *****
+```
+
 
 
 # Section Naveed {.tabset}
@@ -50,13 +56,63 @@ library(janitor, quietly = T)
 
 ## Question 1
 
+- Do people with higher income consume more alcohol and how does the consumption of alcohol vary with an increase in income?
+
+```{r}
+# scatter plot of consumption per person vs income
+
+options(scipen = 999)
+
+sp <- ggplot(data = alcohol, aes(x = GDP_per_capita, y = Total_alcohol_consumption_per_capita)) +
+  geom_point() + scale_x_continuous(trans = 'log10')
+
+# Wrangle and get the data ready for the model
+alcohol2 <- filter(alcohol, GDP_per_capita>=0, GDP_per_capita<=70000) %>% select(Entity,GDP_per_capita,Total_alcohol_consumption_per_capita)
+
+alcohol3 <- na.omit(alcohol2)
+
+# Fit a simple linear regression model of consumption per person on income
+con_fit <- lm(Total_alcohol_consumption_per_capita~GDP_per_capita, data=alcohol3)
+#tidy(con_fit)
+# Add predictions, residuals, etc. to the training data
+con_model <- augment(con_fit, alcohol3)
+
+# Fitting the estimated model over the data
+con_mod <- ggplot(con_model, aes(x=GDP_per_capita, y=Total_alcohol_consumption_per_capita)) + 
+  geom_point() +
+  geom_line(aes(y=.fitted), colour="blue")
+
+options(scipen = 999)
+con_mod
+
+#con_modi <- ggplotly(con_mod)
+#con_modi
+# *****
+
+
+# Summary of the fitted linear regression model
+con_lin_fit <- lm(formula = Total_alcohol_consumption_per_capita ~ GDP_per_capita, data = alcohol3)
+
+# Return a summary of the fitted linear regression model
+summary(con_lin_fit)
+
+# Table that displays five countries each for both highest gdp per capita and lowest gdp per capita
+alcohol10 <- arrange(alcohol3, desc(GDP_per_capita))
+
+alcohol_gdp <- filter(alcohol10, Entity %in% c("Switzerland", "Brunei", "United Arab Emirates", "Norway", "United States", "Burundi", "Central African Republic", "Democratic Republic of Congo", "Somalia", "Mozambique"))
+
+alcohol_gdp
+
+# *****
+```
+
 
 
 
 
 ## Question 2
 
-
+- Is death dependant on consumption, income and alcohol household expense? % Death prediction with x1 consumption, x2 income and x3 alcohol household expense. Which countries had the highest percentage of alcohol related deaths in 2015? Are there any interesting findings and any possible potential underlying reasons? 
 
 ```{r readData and review, echo=FALSE}
 # Read data and review
