@@ -140,8 +140,7 @@ alcohol_gdp
 
 ## Question 2
 
-- Is death dependant on consumption, income and alcohol household expense? % Death prediction with x1 consumption, x2 income and x3 alcohol household expense. Which countries had the highest percentage of alcohol related deaths in 2015? Are there any interesting findings and any possible potential underlying reasons? 
-
+- Is death dependant on consumption, income and alcohol household expense? Which countries had the highest percentage of deaths from alcohol use disorders in 2015? Are there any interesting findings and any possible potential underlying reasons? 
 
 ```{r}
 # select variables for regression
@@ -206,6 +205,50 @@ countries_2015 <- filter(alcohol, Year == 2015) %>% select(Entity, Death_alcohol
 countries_deaths <- arrange(countries_2015, desc(Death_alcohol_use_disorders))
 # *****
 ```
+
+```{r}
+# % death in alcohol use disorders vs alcohol consumption per capita
+sp_death_con <- ggplot(data = alcohol, aes(x = Total_alcohol_consumption_per_capita, y = Death_alcohol_use_disorders)) +
+  geom_point()
+
+sp_death_con
+```
+
+```{r}
+# % death in alcohol use disorders vs GDP Per Capita
+sp_death_gdp <- ggplot(data = alcohol, aes(x = GDP_per_capita, y = Death_alcohol_use_disorders)) +
+  geom_point()
+
+sp_death_gdp
+```
+
+```{r}
+# % death in alcohol use disorders vs household alcohol expense
+sp_death_exp <- ggplot(data = alcohol, aes(x = Alcohol_expenditure_rate_per_household, y = Death_alcohol_use_disorders)) +
+  geom_point()
+
+sp_death_exp
+```
+
+- The Multiple Linear Regression model of percentage death (in alcohol use disorders) regressed on consumption, income and household alcohol expense has been used to investigate Question 2.
+
+- The model summary table in Fig A, shows that a 1 Litre increase in annual pure alcohol consumption per person increases the death percentage in alcohol use disorder by 1.122%.
+
+- However, an increase of USD 10000 in GDP Per Capita decreases the percentage death in alcohol use disorder by 0.72% and an increase of 1% in the weekly household alcohol expense decreases the percentage death in alcohol use disorder by 0.15%
+
+- The overall p-value is lower than the usual significance value of 5%, which suggests that percentage death in alcohol use disorders is dependant on the predictors present in the model. 
+
+- The Multiple R-Squared value in the model summary table shows that the model explains 45% of the variation in percentage deaths in alcohol use disorders. Therefore, the model may be considered to be accurate, however, there is space for improvement.
+
+- The scatter plot of deaths from alcohol use disorders vs alcohol consumption per person shows that at first the percentage death increases slightly with an increase in consumption but then it increases exponentially beyond approximately 7.5 litres.
+
+- The scatter plot of deaths from alcohol use disorders vs GDP Per Capita shows that the percentage death is higher for countries with low GDP Per Capita and then the percentage death decreases exponentially as GDP Per Capita increases till it eventually almost becomes constant.
+
+- Further research may determine whether this decline in percentage deaths may be a result of the ***availability of safer and better quality alcohol for consumption, better individual health, quality of healthcare and affordability of better healthcare***. These may also be some of the **additional predictors** that may help explain the remaining 55% of variation in deaths from alcohol use disorders.
+
+- The scatter plot of deaths from alcohol use disorders vs household alcohol expense shows that the percentage death is about constant at first but then increases exponentially beyond a household alcohol expense of 1.5%. Some of the observed outliers may be a result of the **additional predictors** mentioned above. This scatter plot is also reflective of the death vs consumption scatter plot in Fig B and, therefore, reaffirms that percentage death is dependant on the alcohol consumption per person.
+
+- The above scatter plots also help explain why the Multiple Linear Regression model used explains only 45% of the variation in percentage deaths in alcohol use orders because the relation between the dependant and independant variables does not appear to be linear.
 
 
 
