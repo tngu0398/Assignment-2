@@ -1,5 +1,5 @@
 ---
-title: "Ass2_draft"
+title: "Assignment2_draft"
 author: "Shiyuan Zhang"
 date: "2023-06-07"
 output:
@@ -104,13 +104,12 @@ table1 <- knitr::kable(data_table1,
 table1
 ```
 
-#### {-}
 
 ### The numbers flutuate, but we have seen some improvements. {.tabset}
 
 Table \@ref(tab:TableSummary2) shows the standard deviations of %death from alcohol per country from 2010-2019. Most countries with high variances also had high average %death rates such as Kazakhstan, Guatemala, Russia, Mongolia, etc.
 
-In figure \@ref(fig:Visual_trend), rate groups are classified by the mean annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top 5 countries are shown in each group. Note that the y axis are different in each subplot. (This is to illustrate the trends in each group.) Zooming in onto the global trends, we can see that:
+In figure \@ref(fig:Visualtrend), rate groups are classified by the mean annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top 5 countries are shown in each group. Note that the y axis are different in each subplot. (This is to illustrate the trends in each group.) Zooming in onto the global trends, we can see that:
 
 -Most countries with both medium and high average annual %death from alcohol showed some improvements with a decreased %death rate.
 
@@ -136,7 +135,7 @@ table2
 ```
 
 #### Plot
-```{r Visual_trend, fig.cap= "Visual_trend"}
+```{r Visual_trend, fig.cap= "Visualtrend"}
 # Classfy groups depending on the mean %death over 2010-2019
 data_rank <- data_init_mod %>%
   group_by(Entity) %>%
@@ -184,5 +183,3 @@ visual_2_interactive
 
 ```
 
-
-#### {-}
