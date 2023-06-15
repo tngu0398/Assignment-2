@@ -59,17 +59,20 @@ alcohol <- read.csv("Data/alcohol.csv")
 - Do people with higher income consume more alcohol and how does the consumption of alcohol vary with an increase in income?
 
 ```{r}
-# scatter plot of consumption per person vs income
 
 options(scipen = 999)
 
-sp <- ggplot(data = alcohol, aes(x = GDP_per_capita, y = Total_alcohol_consumption_per_capita)) +
-  geom_point() + scale_x_continuous(trans = 'log10')
 
 # Wrangle and get the data ready for the model
 alcohol2 <- filter(alcohol, GDP_per_capita>=0, GDP_per_capita<=70000) %>% select(Entity,GDP_per_capita,Total_alcohol_consumption_per_capita)
 
 alcohol3 <- na.omit(alcohol2)
+
+# scatter plot of consumption per person vs income
+sp <- ggplot(data = alcohol3, aes(x = GDP_per_capita, y = Total_alcohol_consumption_per_capita)) +
+  geom_point()
+
+sp
 
 # Fit a simple linear regression model of consumption per person on income
 con_fit <- lm(Total_alcohol_consumption_per_capita~GDP_per_capita, data=alcohol3)
@@ -96,6 +99,9 @@ con_lin_fit <- lm(formula = Total_alcohol_consumption_per_capita ~ GDP_per_capit
 # Return a summary of the fitted linear regression model
 summary(con_lin_fit)
 
+# Examine outliers
+alc_outliers <- arrange(alcohol3, desc(Total_alcohol_consumption_per_capita))
+
 # Table that displays five countries each for both highest gdp per capita and lowest gdp per capita
 alcohol10 <- arrange(alcohol3, desc(GDP_per_capita))
 
@@ -106,7 +112,29 @@ alcohol_gdp
 # *****
 ```
 
+- The scatter plot in fig X does show that, in general, consumption of alcohol is found to be higher for people with higher income.
 
+- At first, the consumption of alcohol increases exponentially as income increases and then becomes approximately constant around and beyond a GDP Per Capita of USD 20000.
+
+- The fitted simple linear regression model of consumption per person on income shows that for an increase of USD 1000 in income the consumption of alcohol per person increases by 105.2 ml
+
+- The overall p-value and the one for the variable GDP Per Capita is much lower than the usual significance level of 5%. which shows that alcohol consumption per person is dependant on income.
+
+- However, the linear regression model only explains about 18.13% of the variation in alcohol consumption per person, which suggests that the relationship between alcohol consumption per person and income may not be linear and the model is not very accurate.
+
+- This is confirmed by the plot of the fitted linear regression model in fig Y, which also shows that most of the observations lie above the line of best fit and suggests a curved relationship instead.
+
+- Therefore, the relationship is not linear and the model can be optimized further.
+
+- With a GDP Per Capita of approximately USD 27500, Seychelles is an outlier and has the highest alcohol consumption per person of 20.5 L, further research may confirm if this because Seychelles is a very popular tourist and retirement spot.
+
+- With a GDP Per Capita of approximately USD 27600, Malaysia is also an outlier and has one of the lowest alcohol consumption per person of 0.85 L, further research may confirm if this because of religious influence, lack of preference and a lack of affordability in Malaysia.
+
+- The table in fig Z shows countries with various GDP Per Capita and reiterates the fact that countries with higher income such as Switzerland, Norway and the United States have a higher alcohol consumption per person compared to countries with lower income such as Congo, Somalia and Mozambique. This table also confirms the earlier analysis that after a particular income level the alcohol consumption per person is relatively constant.
+
+- However, further research into the outlier Burundi with a GDP Per Capita of approximately only USD 800 but a nearly 400% higher alcohol consumption per person compared to the other lower income countries mentioned above, may suggest it to be the result of cultural influence.
+
+- Similarly, both the outliers UAE and Brunei as compared to the other countries with high income mentioned above have a comparatively low alcohol consumption per person. Further research may help to determine if this a result of religious influence in the respective countries.
 
 
 
@@ -114,27 +142,13 @@ alcohol_gdp
 
 - Is death dependant on consumption, income and alcohol household expense? % Death prediction with x1 consumption, x2 income and x3 alcohol household expense. Which countries had the highest percentage of alcohol related deaths in 2015? Are there any interesting findings and any possible potential underlying reasons? 
 
-```{r readData and review, echo=FALSE}
-# Read data and review
-alcohol <- read.csv("Data/alcohol.csv")
-
-# scatter plot of consumption vs income
-year18 <- filter(alcohol, Year == 2018)
-
-options(scipen = 999)
-
-sp <- ggplot(data = year18, aes(x = GDP_per_capita, y = Total_alcohol_consumption_per_capita)) +
-  geom_point() + scale_x_continuous(trans = 'log10')
-sp
-# *****
-```
 
 ```{r}
 # select variables for regression
 selected.var <- c(4, 6, 11, 12)
 # partition data
 set.seed(1)  # set seed for reproducing the partition
-train.index <- sample(c(1:3619), 2000) 
+train.index <- sample(c(1:3618), 2000) 
 train.df <- alcohol[train.index, selected.var]
 test.df <- alcohol[-train.index, selected.var]
 
