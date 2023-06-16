@@ -155,54 +155,6 @@ test.df <- alcohol[-train.index, selected.var]
 death_m <- lm(Death_alcohol_use_disorders ~., data = train.df)
 options(scipen = 999)
 summary(death_m)
-
-# death model for the UK
-death_uk <- filter(alcohol, Entity == "United Kingdom")
-
-# select variables for regression of death on consumption
-selected.var2 <- c(11, 12)
-# partition data
-set.seed(1)  # set seed for reproducing the partition
-train.index <- sample(c(1:3619), 2000) 
-train.df <- alcohol[train.index, selected.var2]
-test.df <- alcohol[-train.index, selected.var2]
-
-# death regress on consumption
-death_m2 <- lm(Death_alcohol_use_disorders ~., data = train.df)
-options(scipen = 999)
-summary(death_m2)
-
-# select variables for regression of death on income
-selected.var3 <- c(4, 11)
-# partition data
-set.seed(1)  # set seed for reproducing the partition
-train.index <- sample(c(1:3619), 2000) 
-train.df <- alcohol[train.index, selected.var3]
-test.df <- alcohol[-train.index, selected.var3]
-
-# death regress on income
-death_m3 <- lm(Death_alcohol_use_disorders ~., data = train.df)
-options(scipen = 999)
-summary(death_m3)
-
-# select variables for regression of death on alcohol household expense rate
-selected.var4 <- c(6, 11)
-# partition data
-set.seed(1)  # set seed for reproducing the partition
-train.index <- sample(c(1:3619), 2000) 
-train.df <- alcohol[train.index, selected.var4]
-test.df <- alcohol[-train.index, selected.var4]
-
-# death regress on alcohol household expense rate
-death_m4 <- lm(Death_alcohol_use_disorders ~., data = train.df)
-options(scipen = 999)
-summary(death_m4)
-
-# wrangling data
-countries_2015 <- filter(alcohol, Year == 2015) %>% select(Entity, Death_alcohol_use_disorders, Total_alcohol_consumption_per_capita, GDP_per_capita, Alcohol_expenditure_rate_per_household) 
-
-# countries with highest percentage of alcohol related deaths in 2015
-countries_deaths <- arrange(countries_2015, desc(Death_alcohol_use_disorders))
 # *****
 ```
 
@@ -230,6 +182,20 @@ sp_death_exp <- ggplot(data = alcohol, aes(x = Alcohol_expenditure_rate_per_hous
 sp_death_exp
 ```
 
+```{r}
+# countries in 2015
+countries_2015 <- filter(alcohol, Year == 2015) %>% select(Entity, Death_alcohol_use_disorders, Total_alcohol_consumption_per_capita, GDP_per_capita, Alcohol_expenditure_rate_per_household) 
+
+# top 7 countries with highest percentage of alcohol related deaths in 2015
+countries_deaths <- filter(countries_2015, Death_alcohol_use_disorders >= 12.5, Death_alcohol_use_disorders <= 22) 
+
+countries_deaths_highest <-  arrange(countries_deaths, desc(Death_alcohol_use_disorders))
+countries_deaths_highest
+
+
+# *****
+```
+
 - The Multiple Linear Regression model of percentage death (in alcohol use disorders) regressed on consumption, income and household alcohol expense has been used to investigate Question 2.
 
 - The model summary table in Fig A, shows that a 1 Litre increase in annual pure alcohol consumption per person increases the death percentage in alcohol use disorder by 1.122%.
@@ -246,9 +212,11 @@ sp_death_exp
 
 - Further research may determine whether this decline in percentage deaths may be a result of the ***availability of safer and better quality alcohol for consumption, better individual health, quality of healthcare and affordability of better healthcare***. These may also be some of the **additional predictors** that may help explain the remaining 55% of variation in deaths from alcohol use disorders.
 
-- The scatter plot of deaths from alcohol use disorders vs household alcohol expense shows that the percentage death is about constant at first but then increases exponentially beyond a household alcohol expense of 1.5%. Some of the observed outliers may be a result of the **additional predictors** mentioned above. This scatter plot is also reflective of the death vs consumption scatter plot in Fig B and, therefore, reaffirms that percentage death is dependant on the alcohol consumption per person.
+- The scatter plot of deaths from alcohol use disorders vs household alcohol expense shows that the percentage death is about constant at first but then increases exponentially beyond a household alcohol expense of 1.5%. This is contrary to the earlier description of the relationship between the same two variables by the Multiple Linear Regression model. Some of the observed outliers may be a result of the **additional predictors** mentioned above. This scatter plot is also reflective of the deaths from alcohol use disorders vs alcohol consumption per person in Fig B and, therefore, reaffirms that percentage death is dependant on the alcohol consumption per person.
 
-- The above scatter plots also help explain why the Multiple Linear Regression model used explains only 45% of the variation in percentage deaths in alcohol use orders because the relation between the dependant and independant variables does not appear to be linear.
+- The above scatter plots also help explain why the Multiple Linear Regression model used explains only 45% of the variation in percentage deaths in alcohol use orders because the relation between the dependant and independant variables does not appear to be linear. Therefore, the model should be optimized further.
+
+- The table in Fig C, shows two of the outliers El Salvador and Gautemala, both of which had one of the highest percentage deaths in alcohol use disorders in 2015 but one of the lowest alcohol consumption per capita of 3.59 litres and 2.55 litres respectively. Further research may help determine whether some of the **additional predictors** mentioned above such as consumption of unsafe and low quality alcohol, comparatively poorer individual health, lack of quality and affordable healthcare contributed to the high percentage of deaths in alchol use disorders for these countries.  
 
 
 
