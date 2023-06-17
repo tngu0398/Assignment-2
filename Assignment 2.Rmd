@@ -52,7 +52,7 @@ data_init_mod <- data_init[, c("Entity", "Year", "Code", "Death_alcohol_use_diso
 
 # Introduction
 
-Overconsumption of alcohol can harm an individual's health and safety, leading to relationships and/or financial problems. Alcohol use disorders affect people globally and causes death every year either directly, from alcohol-induced diseases such as liver diseases, neurodegenerative disorders, or heart failure, or indirectly from suicide.
+Moreover, overconsumption of alcohol can harm an individual's health and safety, leading to relationships and/or financial problems. Alcohol use disorders affect people globally and causes death every year either directly, from alcohol-induced diseases such as liver diseases, neurodegenerative disorders, or heart failure, or indirectly from suicide.
 
 *Jane's Section* 
 
@@ -605,8 +605,7 @@ Across all regions, it is clear there is a higher percentage of males with alcoh
 
 # Conclusion
 
-Deaths from alcohol tend to be more prevalent in countries with cold and dry climates. However, social, cultural, and economic factors are more of our interest to investigate because, whereas we cannot do much about a country’s weather, we could understand what is causing people to drink too much, which would potentially allow us to design educational and addiction treatment programs to offer support.
+Thirdly, deaths from alcohol tend to be more prevalent in countries with cold and dry climates. However, social, cultural, and economic factors are more of our interest to investigate because, whereas we cannot do much about a country’s weather, we could understand what is causing people to drink too much, which would potentially allow us to design educational and addiction treatment programs to offer support.
 
-# References
 
 
