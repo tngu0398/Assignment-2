@@ -1,5 +1,5 @@
 ---
-title: "Assignment2_draft"
+title: "Assignment 2: Team Project"
 author: "Naveed Aamir, Jane Nguyen, Tony Nguyen, Shiyuan Zhang"
 date: "2023-06-07"
 output: 
@@ -7,12 +7,11 @@ output:
   fig_caption: yes
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-```{r LoadLibrary}
+```{r LoadLibrary, echo=FALSE}
 library(tidyverse)
 library(plotly)
 library(bookdown)
@@ -42,12 +41,8 @@ library(lubridate, quietly = T)
 library(janitor, quietly = T)
 ```
 
-# ASSESSMENT 2 
-
-
-
-## INTRODUCTION
-Alcohol usage is a common occurrence in today's society, however the consumption amount varies across geographical regions and can be influenced by different factors. The report explores the relationship between total alcohol consumption and the geographical regions, as well as the significant influence of religion in alcohol usage globally.   
+# Introduction
+Alcohol usage is a common occurrence in today's society, however the consumption amount varies across geographical regions and can be influenced by different factors (World Bank, 2022). The report explores the relationship between total alcohol consumption and the geographical regions, as well as the significant influence of religion in alcohol usage globally.
 
 While it is commonly assumed males are the primary consumers of alcohol, this report goes beyond geographical considerations and investigates the prevalence of alcohol disorders among both males and females across various income groups. The aim is to identify any variations and temporal trends in alcohol-related issues.
 
@@ -57,35 +52,23 @@ While alcohol is often consumed for leisure, relaxation, and celebration, it unf
 
 Thus, this report delves into the influence of income on alcohol consumption, explores the contributing variables to alcohol-related deaths, and discusses countries with the highest percentage of deaths attributed to alcohol use disorders.
 
-```{r readData and review, echo=FALSE}
+```{r readData and review, echo=TRUE}
 # Read data and review
 alcohol <- read.csv("Data/alcohol.csv")
-# *****
+
 ```
 
-```{r LoadData2}
+
+```{r readData, echo=FALSE}
 #Load merged data
-data_init <- read.csv("Alcohol/Merge_all_2010_2020_updated.csv")
+data_init <- read.csv("Data/alcohol.csv")
 
 #Subset dataset for the section
 
-data_init_mod <- data_init %>%
-  c("Entity", "Year", "Code", "Death_alcohol_use_disorders")
-
 data_init_mod <- data_init[, c("Entity", "Year", "Code", "Death_alcohol_use_disorders")]
 
-```
-
-
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
-
 # read in data set 
-data = read.csv('Merge_all_2010_2020_updated.csv')
-
-```
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+data = read.csv("Data/alcohol.csv")
 
 # extracting columns to use from data 
 extractedData =  data[, c(1, 2, 3, 12)]
@@ -93,20 +76,39 @@ extractedData =  data[, c(1, 2, 3, 12)]
 # omit NA values
 newExtractedData = na.omit(extractedData)
 
+#wrangle data to only include specific regions and alcohol use disorders in males and females
+alc_sex_regions <- data %>% 
+  dplyr::select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
+         Prevalence_alcohol_use_disorders_female) %>%
+  na.omit() %>%
+  filter(Entity %in% c("African Region (WHO)", "Australia", "China", 
+                       "European Region (WHO)", "United Kingdom", 
+                       "United States"))
+
+#wrangle data to only include income groups and alcohol use disorders in males and females
+alc_sex_income <- data %>%
+  dplyr::select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
+         Prevalence_alcohol_use_disorders_female) %>%
+  na.omit() %>%
+  filter(Entity %in% c("World Bank Low Income", "World Bank Lower Middle Income", 
+                       "World Bank Upper Middle Income", "World Bank High Income"))
+
 ```
 
-*Question 1*
+# Jane's Section {.tabset}
+
+## Question 1
 
 -   How has the total alcohol consumption per capita changed over time in relation to geographical regions?
 
-**Analysis**
+### Analysis
 
 Table \@ref(tab:Table1) presented the overall median global growth of alcohol consumption from 2000 to 2018. However, Figure \@ref(fig:Figure1) revealed that regions were still experiencing diverging patterns during this period. Regions such as 'East Asia and Pacific', 'South Asia', 'North America' and 'Middle East and North Africa' increased in alcohol consumption, while other regions like 'Europe and Central Asia', 'Latin America and Caribbean' and 'Sub-Saharan Africa' experienced declines.
 
 Table \@ref(tab:Table1) provided insights of the average (6.18L) and median (6.11L) alcohol consumption in 2010, this year stands as the highest in total consumption. Similarly, Figure 2 presents the visual depiction of countries around the world reaching their highest in 2010, followed by subsequent decrease.
 
 
-**Table 1**
+### Table 1
 
 Table \@ref(tab:Table1) displays the IQR, the range, Mean and Median values of total alcohol consumption in 2000, 2005, 2010, 2015 and 2018
 
@@ -174,10 +176,441 @@ kable(totalCombinedSummary, format = "html", align = "c", caption = "Alcohol Con
 ```
 
 
+### Figure 1
+
+Figure \@ref(fig:Figure1) displays the trends in total alcohol consumption across geographical regions from 2000 to 2018, with the World's rate shown as a dot-dashed line
+
+-   'Europe and Central Asia' region experienced a notable decrease in consumption, while 'Latin America and Caribbean' and 'Sub-Saharan Africa' regions saw slight declines
+
+-   'East Asia and Pacific' and 'South Asia' regions presented rapid growth, particularly between 2005 and 2010
+
+-   'North America' and 'Middle East and North Africa' regions had minor increases, however the 'Middle East and North Africa' remained the lowest
+
+```{r Figure1, fig.cap = "Region Chart", echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+
+# selecting specific regions 
+specifiedRegions = c("World", "East Asia and Pacific", "Europe and Central Asia", "Latin America and Caribbean", "Middle East and North Africa", "North America", "South Asia", "Sub-Saharan Africa")
+
+specifiedRegionsData = newExtractedData %>% filter(Entity %in% specifiedRegions)
+
+# create chart with World being a dotdash line type 
+regionChart = ggplot(specifiedRegionsData, aes(x = Year, y = Total_alcohol_consumption_per_capita, group = Entity, color = Entity)) + geom_line(aes(linetype= if_else(Entity == "World", "solid", "dotdash"))) + geom_point() + labs(x = "Year", y = "Alcohol Consumption in Litres", title = "Total Alcohol Consumption by Geographical Region") + scale_linetype_manual(values = c("solid", "dotdash"), guide = FALSE) + theme_minimal()
+
+regionChart
+
+```
+
+## Question 2
+
+-   How does the influence of religion relate to variations in total alcohol consumption per capita across different locations?
+
+### Analysis
+
+Figure \@ref(fig:Figure1) highlighted the region 'Middle East and North Africa' as having had experienced the least growth and changes from 2000 to 2018 in comparison to the others. Notably, 'Middle East and North Africa' consistently exhibited the lowest alcohol consumption (consuming less than 1L each year). Similarly, Figure 2 shows the geographical locations: the Middle East, North Africa and the Greater Indonesia to have had minor changes over the years.
+
+Table \@ref(tab:Table2) demonstrates consistency among the lowest 10 countries in alcohol consumption over the years, with only minor variations. Interestingly, a significant number of these countries are known for their devotion of Islamic values.
+
+Although the impact of religion on alcohol consumption cannot be definitively determined without further global religious information. Figure \@ref(fig:Figure1), Table \@ref(tab:Table2) and Figure 2 suggest that these locations (the Middle East, North Africa and the Greater Indonesia) may experience lower alcohol consumption due to religious beliefs.
+
+### Figure 2
+
+Figure 2 presents the alcohol consumption per capita in 2000, 2005, 2010, 2015 and 2018. Some notable observations are:
+
+-   In 2000, Russia showed high alcohol consumption but over time it declined to 11.19L in 2018
+
+-   In 2010, most countries had their highest rate of alcohol consumption
+
+-   From 2000 to 2018, the majority of North Africa, the Middle East and the Greater Indonesia regions presented minimal changes in alcohol consumption - this may be attributed by Islamic beliefs as the Quran deems drinking as haram
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+
+# loading world map 
+worldMap = map_data("world")
+
+# selecting specific year 2000
+extractedData2000 = filter(newExtractedData, Year == 2000)
+
+worldMap $ iso3c = countrycode(worldMap$region, 'country.name', 'iso3c')
+
+extractedData2000Map = left_join(worldMap, extractedData2000, by = c("iso3c" = "Code"))
+
+# heat map based on total alcohol consumption in 2000 
+dataMap2000 = ggplot() + geom_map(data = extractedData2000Map, map = extractedData2000Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2000 Alcohol Consumption per Capita")
 
 
-# Section Naveed {.tabset}
+# selecting specific year 2005
+extractedData2005 = filter(newExtractedData, Year == 2005)
 
+extractedData2005Map = left_join(worldMap, extractedData2005, by = c("iso3c" = "Code"))
+
+# heat map based on total alcohol consumption in 2005 
+dataMap2005 = ggplot() + geom_map(data = extractedData2005Map, map = extractedData2005Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2005 Alcohol Consumption per Capita")
+
+
+# selecting specific year 2010
+extractedData2010 = filter(newExtractedData, Year == 2010)
+
+extractedData2010Map = left_join(worldMap, extractedData2010, by = c("iso3c" = "Code"))
+
+# heat map based on total alcohol consumption in 2010 
+dataMap2010 = ggplot() + geom_map(data = extractedData2010Map, map = extractedData2010Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2010 Alcohol Consumption per Capita")
+
+
+# selecting specific year 2015
+extractedData2015 = filter(newExtractedData, Year == 2015)
+
+extractedData2015Map = left_join(worldMap, extractedData2015, by = c("iso3c" = "Code"))
+
+# heat map based on total alcohol consumption in 2015 
+dataMap2015 = ggplot() + geom_map(data = extractedData2015Map, map = extractedData2015Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2015 Alcohol Consumption per Capita")
+
+
+# selecting specific year 2018
+extractedData2018 = filter(newExtractedData, Year == 2018)   
+
+extractedData2018Map = left_join(worldMap, extractedData2018, by = c("iso3c" = "Code"))
+
+# heat map based on total alcohol consumption in 2018 
+dataMap2018 = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2018 Alcohol Consumption per Capita")
+
+
+# display graphs using par()
+par(mfrow = c(3, 2))
+plot(dataMap2000)
+plot(dataMap2005)
+plot(dataMap2010)
+plot(dataMap2015)
+plot(dataMap2018)
+
+```
+
+### Table 2
+
+Table \@ref(tab:Table2) presents the lowest 10 countries in 2000, 2005, 2010, 2015 and 2018 in alcohol consumption
+
+```{r Table2, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+
+# calculating the total alcohol consumption in 2000
+total2000 = extractedData2000 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
+
+# arranging total consumption in descending order
+topTotal2000 = arrange(total2000, desc(Total))
+
+# selecting the bottom 15 countries in 2000
+tailTotal2000 = tail(topTotal2000, 10)
+
+
+# calculating the total alcohol consumption in 2005
+total2005 = extractedData2005 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
+
+# arranging total consumption in descending order
+topTotal2005 = arrange(total2005, desc(Total))
+
+# selecting the bottom 15 countries in 2005
+tailTotal2005 = tail(topTotal2005, 10)
+
+
+# calculating the total alcohol consumption in 2010
+total2010 = extractedData2010 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
+
+# arranging total consumption in descending order
+topTotal2010 = arrange(total2010, desc(Total))
+
+# selecting the bottom 15 countries in 2010
+tailTotal2010 = tail(topTotal2010, 10)
+
+
+# calculating the total alcohol consumption in 2015
+total2015 = extractedData2015 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
+
+# arranging total consumption in descending order
+topTotal2015 = arrange(total2015, desc(Total))
+
+# selecting the bottom 15 countries in 2015
+tailTotal2015 = tail(topTotal2015, 10)
+
+
+# calculating the total alcohol consumption in 2018
+total2018 = extractedData2018 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
+
+# arranging total consumption in descending order
+topTotal2018 = arrange(total2018, desc(Total))
+
+# selecting the bottom 15 countries in 2018
+tailTotal2018 = tail(topTotal2018, 10)
+
+
+# combining the data for each year into one 
+combinedData = bind_rows(mutate(tailTotal2000, Year = 2000), mutate(tailTotal2005, Year = 2005), mutate(tailTotal2010, Year = 2010), mutate(tailTotal2015, Year = 2015), mutate(tailTotal2018, Year = 2018))
+
+# creating separate columns for each year
+combinedData = pivot_wider(data = combinedData, id_cols = Entity, names_from = Year, values_from = Total)
+
+# converting to character type and replacing NA values with '-'
+combinedData = combinedData %>% mutate(across(everything(), as.character)) %>% replace_na(list(`2000` = '-', `2005` = '-', `2010` = '-', `2015` = '-', `2018` = '-'))
+
+# display table using kable()
+kable(combinedData, format = "html", align = "c", caption = "Bottom 10 Countries in Alcohol Consumption (Litres)") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+
+```
+
+
+# Tony's Section {.tabset}
+
+## Question 1 
+- What are the variations in the prevalence of alcohol disorders among men and women across different income groups?
+
+### Analysis
+
+An association between income and alcohol disorders reveals noteworthy deviations from 2010 to 2019 but it is also important to consider the influence of other socioeconomic factors.
+
+There is a noticeable distinction between the high-income group and other income groups as illustrated in Figure \@ref(fig:IncomeGraph). The percentage of alcohol disorders in the high-income group is significantly greater when compared with other income groups especially among females. This may be a result of females in the high-income group subject to societal expectations or gender roles which lead to increased alcohol related issues. There is a consistent trend indicating a higher prevalence of alcohol disorders among individuals from the higher income groups possibly with work pressures. 
+
+Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors.
+
+When comparing the rate of alcohol use disorders in 2010 and 2019 as shown in \@ref(tab:IncomeTable), both males and females have similar trends. It can be noted there have been decrease in males with alcohol use disorders for the high income group and significantly in lower-middle income group by 0.14%. A parallel trend follows for females in the high and lower-middle income groups. Males in the high income group are approximately double the rate of females with alcohol disorders. However, when compared males and females in the other income groups, the rate of alcohol disorders in males are roughly 4 times the rates in females. 
+
+Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors. Furthermore, it is crucial to understand that the working population in each income group may be not accurate and the income brackets of each group may be skewed. Regardless of the data limitations, there are several variations in the prevalence of alcohol disorders among men and women across different income groups.
+
+```{r IncomeGraph, fig.cap="Percentage of males and females with alcohol use disorders across different income groups", echo = FALSE, warning = FALSE, message = FALSE}
+
+#create variable to plot male data across different income groups 
+male_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = Entity)) +
+  labs(x = "Year", y = "% with alcohol use disorders", title = "Male", color = "Income Group") +
+  scale_color_manual(values = c("blue", "green", "orange", "red"),
+                     labels = c("Low", "Lower Middle", "Upper Middle", "High"),
+                     breaks = c("World Bank Low Income", "World Bank Lower Middle Income", 
+                                "World Bank Upper Middle Income", "World Bank High Income")) +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(2010, 2019, 2)) + 
+  scale_y_continuous(breaks = seq(1.75, 3, 0.25))
+
+#create variable to plot female data across different income groups 
+female_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = Entity)) +
+  labs(x = "Year", y = "% with alcohol use disorders", title = "Female", color = "Income Group") +
+  scale_color_manual(values = c("blue", "green", "orange", "red"),
+                     labels = c("Low", "Lower Middle", "Upper Middle", "High"),
+                     breaks = c("World Bank Low Income", "World Bank Lower Middle Income", 
+                                "World Bank Upper Middle Income", "World Bank High Income")) +
+  theme(legend.position = "right", plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(2010, 2019, 2)) +
+  scale_y_continuous(breaks = seq(0.4, 1.6, 0.2))
+
+#merge both male and female plots into one figure
+grid.arrange(male_income, female_income, ncol = 1)
+```
+
+```{r IncomeTable, echo = FALSE, warning = FALSE, message = FALSE}
+#create data frame for only 2010 and 2019 data
+alc_sex_income_10_19 <- alc_sex_income %>%
+  filter(Year %in% c(2010,2019))
+
+#create kable table to display data for 2010 and 2019 %
+kable(alc_sex_income_10_19, caption = "Percentage of males and females in different income groups with alcohol use disorders in 2010 and 2019")
+```
+
+## Question 2
+- What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?
+
+### Analysis
+
+By observing Figure \@ref(fig:RegionGraph), across all regions, it is clear there is a higher percentage of males with alcohol disorders than females and this statistic has not changed over the period 2010 to 2019. However, there is no evident similar trends between each region as there are various attributable factors such as evolving social norms, increased alcohol availability and alterations in cultural traditions. Regardless, there is an apparent upsurge over this period in the percentage males with alcohol issues are increasing in Australia, China and the United Kingdom. This is also noticeable among females in Australia but in other regions, there are insignificant increases or dips. 
+
+In Table \@ref(tab:RegionTab), the same deductions can be derived. It can be assumed with the an ever-increasing human population, the percentage of individuals with alcohol use disorders across different regions can differ drastically over the 2010 to 2019 period. Regardless of this limitation, it is evident alcohol is a significant problem in areas around the world especially when the population is increasing.
+
+```{r RegionGraph, fig.cap = "Percentage of males and females with alcohol use disorders among major regions from 2010 to 2019", echo = FALSE, warning = FALSE, message = FALSE}
+#create plot for males and females across different regions using facet_wrap
+ggplot(data = alc_sex_regions, aes(x = Year)) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = "Male")) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = "Female")) +
+  labs(x = "Year", y = "% with alcohol use disorders", 
+       title = "Percentage of Alcohol Disorders", 
+       color = "Sex") +
+   scale_color_manual(values = c("blue", "hot pink"),
+                     labels = c("Male", "Female"),
+                     breaks = c("Male", "Female")) + 
+  theme(legend.position = "right", plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(2010, 2019, 2)) + 
+  facet_wrap(~ Entity, ncol = 2, scales = "free_y")
+
+```
+
+```{r RegionTab, echo = FALSE, warning = FALSE, message = FALSE}
+#create data frame for only 2010 and 2019 data
+alc_sex_regions_10_19 <- alc_sex_regions %>%
+  filter(Year %in% c(2010,2019))
+
+#create kable table to display data for 2010 and 2019 %
+kable(alc_sex_regions_10_19, caption = "Percentage of males and females in different regions with alcohol use disorders in 2010 and 2019")
+
+```
+
+
+# Gloria's Section {.tabset}
+
+## Question 1
+- Which countries worldwide were most affected by alcohol use disorders?
+
+### Analysis
+
+Belarus and Mongolia had the highest __direct__ death rates (not including indirect death from suicide) of 21.80 and 17.05 per 100,000 people, respectively, followed by Russia, El Salvador, and Greenland (Table \@ref(tab:TableSummary1)).
+
+Most of the countries with high death rates are in the subarctic or arctic zones in the northern hemisphere (Figure \@ref(fig:Visual1)). This is in line with findings from section 1. The cold and dark climates in these countries might have contributed to this observation.
+
+However, countries in hot and humid weather such as Guatemala and Brazil also had high death rates from alcohol abuse. Countries in the southern subarctic zone with high alcohol consumption levels only showed low to moderate death rates. Therefore, cultural, genetic, historical, and religious factors cannot be ignored when investigating the underlying reason of high death rates in these countries.
+
+### Plot
+
+```{r Visual1, fig.cap = "\\label{fig:Visual1}Annual Death rates from alcohol", echo = FALSE, warning = FALSE, message = FALSE}
+# Load world map data
+world<-map_data("world")
+
+# Create data set and merge with map data
+data_visual1 <- data_init_mod %>%
+  rename("region" = "Entity") %>%
+  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
+  group_by(region) %>%
+  summarize(Mean = mean(Death_alcohol_use_disorders, na.rm = TRUE))
+
+data_visual1 <- left_join(world, data_visual1, by = "region")
+
+# Create heat map
+visual_1 <- ggplot(data_visual1,aes(long,lat,group = group, fill = Mean, label = region)) +
+  geom_polygon(color="white") +
+  scale_fill_gradient(low="lightblue",high="red", name = "Death") +
+  theme(panel.background = element_rect(fill = "lightgrey")) +
+  xlab("") +
+  ylab("Latitude") 
+
+# Make plot interactive and add title and subtitle
+visual_1_interactive <- ggplotly(visual_1) %>%
+  layout(title = list(text = paste0("Death caused by alcohol use disorders",
+                                    "<br>",
+                                    "<sup>",
+                                    "Average annual number of death from alcohol use disorder per 100,000 people",
+                                    "</sup>")),
+      annotations = list(x = 1, y = -0.1, text = "Data retreived from https://ourworldindata.org/alcohol-consumption.",
+                         showarrow = F, xref='paper', yref='paper',
+                         xanchor='right', yanchor='auto',
+                         xshift=0, yshift=5,
+                         font=list(size=10, color="black")))
+
+visual_1_interactive
+
+```
+
+### Table
+
+```{r TableSummary1, echo = FALSE, warning = FALSE, message = FALSE}
+
+data_table1 <- data_init_mod %>%
+  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
+  group_by(Entity) %>%
+  summarize(Mean = mean(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
+  arrange(desc(Mean)) %>%
+  top_n(20)
+
+# Make the table
+table1 <- knitr::kable(data_table1,
+                       digits = 2,
+                       caption = "The top 20 countries with highest annual number of death caused by alcohol use disorders.")
+
+table1
+```
+
+## Question 2
+- Has the situation improved or got worse over the past ten years?
+
+### Analysis
+
+Table \@ref(tab:TableSummary2) shows the standard deviations of %death from alcohol per country from 2010-2019. Most countries with high variances also had high average %death rates such as Kazakhstan, Guatemala, Russia, Mongolia, etc.
+
+In figure \@ref(fig:Visualtrend), rate groups are classified by the average annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top ten countries are shown in each group. __Note that the y axis are different in each subplot.__ This is to illustrate the trends in each group.
+
+Zooming in onto the global trends, we can see that:
+
+- Most countries with both medium and high average annual %death from alcohol showed some improvements with a decreased %death rate.
+
+- Countries with low average annual %death from alcohol had more fluctuations and some even showed a slight increase.
+
+### Plot
+```{r Visualtrend, fig.cap= "\\label{fig:Visualtrend}Changes of death rates from alcohol in selected countries 2010-2019", echo = FALSE, warning = FALSE, message = FALSE}
+# Classfy groups depending on the mean %death over 2010-2019
+data_rank <- data_init_mod %>%
+  group_by(Entity) %>%
+  summarize(Mean = mean(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
+  mutate(rategroup = case_when(Mean >=2.752 ~ "3",
+                               Mean <2.752 & Mean >0.920 ~ "2",
+                               Mean <=0.920 ~ "1"))
+
+# Create list of countries with high, medium, low %death rates
+data_rank_low <- data_rank %>%
+  filter(rategroup == "1") %>%
+  arrange(desc(Mean))
+
+data_rank_medium <- data_rank %>%
+  filter(rategroup == "2") %>%
+  arrange(desc(Mean))
+
+data_rank_high <- data_rank %>%
+  filter(rategroup == "3") %>%
+  arrange(desc(Mean))
+
+# Classify entities by 
+data_rank2 <- data_init_mod %>%
+  group_by(Entity) %>%
+  mutate(rategroup = case_when(Entity %in% data_rank_high$Entity ~ "3",
+                               Entity %in% data_rank_medium$Entity ~ "2",
+                               Entity %in% data_rank_low$Entity ~ "1"))
+
+# Create a line graph to show global trends
+visual2 <- data_rank2 %>%
+  filter(Year > "2009") %>%
+  filter(Entity %in% head(data_rank_high$Entity, 10)|Entity %in% head(data_rank_medium$Entity, 10)|Entity %in% head(data_rank_low$Entity, 10)) %>%
+  filter(!is.na(Death_alcohol_use_disorders)) %>%
+  ggplot(aes(x = as.character(Year), y = Death_alcohol_use_disorders, group = Entity, color = rategroup)) +
+  geom_line() +
+  scale_color_manual(values=c("#FAA19B", "#f66257", "#b73229"))+
+  facet_grid(rategroup~., scales = "free") +
+  xlab("") +
+  ylab("%Death from alcohol")
+
+visual_2_interactive <- ggplotly(visual2) %>%
+  layout(title = list(text = paste0("Death changes from alcohol use disorders 2010-2019 per group",
+                                    "<br>",
+                                    "<sup>")),
+         annotations = list(x = 1, y = -0.1, text = "Data retreived from https://ourworldindata.org/alcohol-consumption.",
+                         showarrow = F, xref='paper', yref='paper',
+                         xanchor='right', yanchor='auto',
+                         xshift=0, yshift=0,
+                         font=list(size=10, color="Black")))
+
+visual_2_interactive
+
+```
+
+### Table
+```{r TableSummary2, echo = FALSE, warning = FALSE, message = FALSE}
+data_table2 <- data_init_mod %>%
+  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
+  group_by(Entity) %>%
+  summarize(Standard_deviation = sd(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
+  arrange(desc(Standard_deviation)) %>%
+  top_n(20)
+
+# Make the table
+table2 <- knitr::kable(data_table2,
+                       digits = 2,
+                       caption = "The top 20 countries with highest variance in number of death caused by alcohol use disorders.")
+
+table2
+
+```
+
+
+# Naveed's Section {.tabset}
 
 ## Question 1
 
@@ -189,7 +622,7 @@ options(scipen = 999)
 
 
 # Wrangle and get the data ready for the model
-alcohol2 <- filter(alcohol, GDP_per_capita>=0, GDP_per_capita<=70000) %>% select(Entity,GDP_per_capita,Total_alcohol_consumption_per_capita)
+alcohol2 <- filter(alcohol, GDP_per_capita>=0, GDP_per_capita<=70000) %>% dplyr::select(Entity,GDP_per_capita,Total_alcohol_consumption_per_capita)
 
 alcohol3 <- na.omit(alcohol2)
 
@@ -280,8 +713,6 @@ knitr::kable(alcohol_gdp, caption = "Some countries with one of the highest and 
 
 - Similarly, both the outliers UAE and Brunei as compared to the other countries with high income mentioned above have a comparatively low alcohol consumption per person. Further research may help to determine if this a result of religious influence in the respective countries.
 
-
-
 ## Question 2
 
 - Is death dependant on consumption, income and alcohol household expense? Which countries had the highest percentage of deaths from alcohol use disorders in 2015? Are there any interesting findings and any possible potential underlying reasons? 
@@ -356,7 +787,7 @@ sp_death_expi
 
 ```{r SummaryTableA}
 # countries in 2015
-countries_2015 <- filter(alcohol, Year == 2015) %>% select(Entity, Death_alcohol_use_disorders, Total_alcohol_consumption_per_capita, GDP_per_capita, Alcohol_expenditure_rate_per_household) 
+countries_2015 <- filter(alcohol, Year == 2015) %>% dplyr::select(Entity, Death_alcohol_use_disorders, Total_alcohol_consumption_per_capita, GDP_per_capita, Alcohol_expenditure_rate_per_household) 
 
 # top 7 countries with highest percentage of alcohol related deaths in 2015
 countries_deaths <- filter(countries_2015, Death_alcohol_use_disorders >= 12.5, Death_alcohol_use_disorders <= 22) 
@@ -390,516 +821,6 @@ knitr::kable(countries_deaths_highest, caption = "The top 7 countries with the h
 
 - The table in \@ref(tab:SummaryTableA), shows two of the outliers El Salvador and Gautemala, both of which had one of the highest percentage deaths in alcohol use disorders in 2015 but one of the lowest alcohol consumption per capita of 3.59 litres and 2.55 litres respectively. Further research may help determine whether some of the **additional predictors** mentioned above such as consumption of unsafe and low quality alcohol, comparatively poorer individual health, lack of quality and affordable healthcare contributed to the high percentage of deaths in alcohol use disorders for these countries.  
 
-
-
-
-# Section Jane {.tabset}
-
-
-## Question 1
-
-**Figure 1**
-
-Figure \@ref(fig:Figure1) displays the trends in total alcohol consumption across geographical regions from 2000 to 2018, with the World's rate shown as a dot-dashed line
-
--   'Europe and Central Asia' region experienced a notable decrease in consumption, while 'Latin America and Caribbean' and 'Sub-Saharan Africa' regions saw slight declines
-
--   'East Asia and Pacific' and 'South Asia' regions presented rapid growth, particularly between 2005 and 2010
-
--   'North America' and 'Middle East and North Africa' regions had minor increases, however the 'Middle East and North Africa' remained the lowest
-
-```{r Figure1, fig.cap = "Region Chart", echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
-
-# selecting specific regions 
-specifiedRegions = c("World", "East Asia and Pacific", "Europe and Central Asia", "Latin America and Caribbean", "Middle East and North Africa", "North America", "South Asia", "Sub-Saharan Africa")
-
-specifiedRegionsData = newExtractedData %>% filter(Entity %in% specifiedRegions)
-
-# create chart with World being a dotdash line type 
-regionChart = ggplot(specifiedRegionsData, aes(x = Year, y = Total_alcohol_consumption_per_capita, group = Entity, color = Entity)) + geom_line(aes(linetype= if_else(Entity == "World", "solid", "dotdash"))) + geom_point() + labs(x = "Year", y = "Alcohol Consumption in Litres", title = "Total Alcohol Consumption by Geographical Region") + scale_linetype_manual(values = c("solid", "dotdash"), guide = FALSE) + theme_minimal()
-
-regionChart
-
-```
-
-
-
-*Question 2*
-
--   How does the influence of religion relate to variations in total alcohol consumption per capita across different locations?
-
-**Analysis**
-
-Figure \@ref(fig:Figure1) highlighted the region 'Middle East and North Africa' as having had experienced the least growth and changes from 2000 to 2018 in comparison to the others. Notably, 'Middle East and North Africa' consistently exhibited the lowest alcohol consumption (consuming less than 1L each year). Similarly, Figure 2 shows the geographical locations: the Middle East, North Africa and the Greater Indonesia to have had minor changes over the years.
-
-Table \@ref(tab:Table2) demonstrates consistency among the lowest 10 countries in alcohol consumption over the years, with only minor variations. Interestingly, a significant number of these countries are known for their devotion of Islamic values.
-
-Although the impact of religion on alcohol consumption cannot be definitively determined without further global religious information. Figure \@ref(fig:Figure1), Table \@ref(tab:Table2) and Figure 2 suggest that these locations (the Middle East, North Africa and the Greater Indonesia) may experience lower alcohol consumption due to religious beliefs.
-
-
-
-**Figure 2**
-
-Figure 2 presents the alcohol consumption per capita in 2000, 2005, 2010, 2015 and 2018. Some notable observations are:
-
--   In 2000, Russia showed high alcohol consumption but over time it declined to 11.19L in 2018
-
--   In 2010, most countries had their highest rate of alcohol consumption
-
--   From 2000 to 2018, the majority of North Africa, the Middle East and the Greater Indonesia regions presented minimal changes in alcohol consumption - this may be attributed by Islamic beliefs as the Quran deems drinking as haram
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
-
-# loading world map 
-worldMap = map_data("world")
-
-# selecting specific year 2000
-extractedData2000 = filter(newExtractedData, Year == 2000)
-
-worldMap $ iso3c = countrycode(worldMap$region, 'country.name', 'iso3c')
-
-extractedData2000Map = left_join(worldMap, extractedData2000, by = c("iso3c" = "Code"))
-
-# heat map based on total alcohol consumption in 2000 
-dataMap2000 = ggplot() + geom_map(data = extractedData2000Map, map = extractedData2000Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2000 Alcohol Consumption per Capita")
-
-
-# selecting specific year 2005
-extractedData2005 = filter(newExtractedData, Year == 2005)
-
-extractedData2005Map = left_join(worldMap, extractedData2005, by = c("iso3c" = "Code"))
-
-# heat map based on total alcohol consumption in 2005 
-dataMap2005 = ggplot() + geom_map(data = extractedData2005Map, map = extractedData2005Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2005 Alcohol Consumption per Capita")
-
-
-# selecting specific year 2010
-extractedData2010 = filter(newExtractedData, Year == 2010)
-
-extractedData2010Map = left_join(worldMap, extractedData2010, by = c("iso3c" = "Code"))
-
-# heat map based on total alcohol consumption in 2010 
-dataMap2010 = ggplot() + geom_map(data = extractedData2010Map, map = extractedData2010Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2010 Alcohol Consumption per Capita")
-
-
-# selecting specific year 2015
-extractedData2015 = filter(newExtractedData, Year == 2015)
-
-extractedData2015Map = left_join(worldMap, extractedData2015, by = c("iso3c" = "Code"))
-
-# heat map based on total alcohol consumption in 2015 
-dataMap2015 = ggplot() + geom_map(data = extractedData2015Map, map = extractedData2015Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2015 Alcohol Consumption per Capita")
-
-
-# selecting specific year 2018
-extractedData2018 = filter(newExtractedData, Year == 2018)   
-
-extractedData2018Map = left_join(worldMap, extractedData2018, by = c("iso3c" = "Code"))
-
-# heat map based on total alcohol consumption in 2018 
-dataMap2018 = ggplot() + geom_map(data = extractedData2018Map, map = extractedData2018Map, aes(x = long, y = lat, map_id = region, fill = Total_alcohol_consumption_per_capita), color = "black") + coord_equal() + theme_void() + scale_fill_gradient2(low = "white", mid = "lightblue", high = "darkred", name = "Alcohol Consumed (Litres)") + labs(title = "2018 Alcohol Consumption per Capita")
-
-
-# display graphs using par()
-par(mfrow = c(3, 2))
-plot(dataMap2000)
-plot(dataMap2005)
-plot(dataMap2010)
-plot(dataMap2015)
-plot(dataMap2018)
-
-```
-
-
-
-**Table 2**
-
-Table \@ref(tab:Table2) presents the lowest 10 countries in 2000, 2005, 2010, 2015 and 2018 in alcohol consumption
-
-```{r Table2, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
-
-# calculating the total alcohol consumption in 2000
-total2000 = extractedData2000 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
-
-# arranging total consumption in descending order
-topTotal2000 = arrange(total2000, desc(Total))
-
-# selecting the bottom 15 countries in 2000
-tailTotal2000 = tail(topTotal2000, 10)
-
-
-# calculating the total alcohol consumption in 2005
-total2005 = extractedData2005 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
-
-# arranging total consumption in descending order
-topTotal2005 = arrange(total2005, desc(Total))
-
-# selecting the bottom 15 countries in 2005
-tailTotal2005 = tail(topTotal2005, 10)
-
-
-# calculating the total alcohol consumption in 2010
-total2010 = extractedData2010 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
-
-# arranging total consumption in descending order
-topTotal2010 = arrange(total2010, desc(Total))
-
-# selecting the bottom 15 countries in 2010
-tailTotal2010 = tail(topTotal2010, 10)
-
-
-# calculating the total alcohol consumption in 2015
-total2015 = extractedData2015 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
-
-# arranging total consumption in descending order
-topTotal2015 = arrange(total2015, desc(Total))
-
-# selecting the bottom 15 countries in 2015
-tailTotal2015 = tail(topTotal2015, 10)
-
-
-# calculating the total alcohol consumption in 2018
-total2018 = extractedData2018 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
-
-# arranging total consumption in descending order
-topTotal2018 = arrange(total2018, desc(Total))
-
-# selecting the bottom 15 countries in 2018
-tailTotal2018 = tail(topTotal2018, 10)
-
-
-# combining the data for each year into one 
-combinedData = bind_rows(mutate(tailTotal2000, Year = 2000), mutate(tailTotal2005, Year = 2005), mutate(tailTotal2010, Year = 2010), mutate(tailTotal2015, Year = 2015), mutate(tailTotal2018, Year = 2018))
-
-# creating separate columns for each year
-combinedData = pivot_wider(data = combinedData, id_cols = Entity, names_from = Year, values_from = Total)
-
-# converting to character type and replacing NA values with '-'
-combinedData = combinedData %>% mutate(across(everything(), as.character)) %>% replace_na(list(`2000` = '-', `2005` = '-', `2010` = '-', `2015` = '-', `2018` = '-'))
-
-# display table using kable()
-kable(combinedData, format = "html", align = "c", caption = "Bottom 10 Countries in Alcohol Consumption (Litres)") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
-
-```
-
-**Gloria'section**
-
-***Research questions***
-Consuming too much alcohol and not being able to control drinking can harm an individual's physical or mental health and safety, causing to family or financial problems. Alcohol use disorders widely affect people across the globe. In this section, we will examine the death caused by alcohol use disorders __directly__ worldwide and attempt to answer the following two questions:
-
-1. Which countries worldwide were most affected by alcohol use disorders?
-
-2. Has the situation improved or got worse over the past ten years?
-
-
-***Countries in cold areas tend to be more affected by alcohol use disorders. {.tabset}***
-
-Belarus and Mongolia had the highest __direct__ death rates (not including indirect death from suicide) of 21.80 and 17.05 per 100,000 people, respectively, followed by Russia, El Salvador, and Greenland (Table \@ref(tab:TableSummary1)).
-
-Most of the countries with high death rates are in the subarctic or arctic zones in the northern hemisphere (Figure \@ref(fig:Visual1)). This is in line with findings from section 1. The cold and dark climates in these countries might have contributed to this observation.
-
-However, countries in hot and humid weather such as Guatemala and Brazil also had high death rates from alcohol abuse. Countries in the southern subarctic zone with high alcohol consumption levels only showed low to moderate death rates. Therefore, cultural, genetic, historical, and religious factors cannot be ignored when investigating the underlying reason of high death rates in these countries.
-
-****Plot****
-
-```{r Visual1, fig.cap = "\\label{fig:Visual1}Annual Death rates from alcohol", echo = FALSE, warning = FALSE, message = FALSE}
-# Load world map data
-world<-map_data("world")
-
-# Create data set and merge with map data
-data_visual1 <- data_init_mod %>%
-  rename("region" = "Entity") %>%
-  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
-  group_by(region) %>%
-  summarize(Mean = mean(Death_alcohol_use_disorders, na.rm = TRUE))
-
-data_visual1 <- left_join(world, data_visual1, by = "region")
-
-# Create heat map
-visual_1 <- ggplot(data_visual1,aes(long,lat,group = group, fill = Mean, label = region)) +
-  geom_polygon(color="white") +
-  scale_fill_gradient(low="lightblue",high="red", name = "Death") +
-  theme(panel.background = element_rect(fill = "lightgrey")) +
-  xlab("") +
-  ylab("Latitude") 
-
-# Make plot interactive and add title and subtitle
-visual_1_interactive <- ggplotly(visual_1) %>%
-  layout(title = list(text = paste0("Death caused by alcohol use disorders",
-                                    "<br>",
-                                    "<sup>",
-                                    "Average annual number of death from alcohol use disorder per 100,000 people",
-                                    "</sup>")),
-      annotations = list(x = 1, y = -0.1, text = "Data retreived from https://ourworldindata.org/alcohol-consumption.",
-                         showarrow = F, xref='paper', yref='paper',
-                         xanchor='right', yanchor='auto',
-                         xshift=0, yshift=5,
-                         font=list(size=10, color="black")))
-
-visual_1_interactive
-
-```
-
-****Table****
-
-```{r TableSummary1, echo = FALSE, warning = FALSE, message = FALSE}
-
-data_table1 <- data_init_mod %>%
-  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
-  group_by(Entity) %>%
-  summarize(Mean = mean(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
-  arrange(desc(Mean)) %>%
-  top_n(20)
-
-# Make the table
-table1 <- knitr::kable(data_table1,
-                       digits = 2,
-                       caption = "The top 20 countries with highest annual number of death caused by alcohol use disorders.")
-
-table1
-```
-
-
-***The numbers fluctuate, but we have seen some improvements. {.tabset}***
-
-Table \@ref(tab:TableSummary2) shows the standard deviations of %death from alcohol per country from 2010-2019. Most countries with high variances also had high average %death rates such as Kazakhstan, Guatemala, Russia, Mongolia, etc.
-
-In figure \@ref(fig:Visualtrend), rate groups are classified by the average annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top ten countries are shown in each group. __Note that the y axis are different in each subplot.__ This is to illustrate the trends in each group.
-
-Zooming in onto the global trends, we can see that:
-
-- Most countries with both medium and high average annual %death from alcohol showed some improvements with a decreased %death rate.
-
-- Countries with low average annual %death from alcohol had more fluctuations and some even showed a slight increase.
-
-
-****Plot****
-```{r Visualtrend, fig.cap= "\\label{fig:Visualtrend}Changes of death rates from alcohol in selected countries 2010-2019", echo = FALSE, warning = FALSE, message = FALSE}
-# Classfy groups depending on the mean %death over 2010-2019
-data_rank <- data_init_mod %>%
-  group_by(Entity) %>%
-  summarize(Mean = mean(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
-  mutate(rategroup = case_when(Mean >=2.752 ~ "3",
-                               Mean <2.752 & Mean >0.920 ~ "2",
-                               Mean <=0.920 ~ "1"))
-
-# Create list of countries with high, medium, low %death rates
-data_rank_low <- data_rank %>%
-  filter(rategroup == "1") %>%
-  arrange(desc(Mean))
-
-data_rank_medium <- data_rank %>%
-  filter(rategroup == "2") %>%
-  arrange(desc(Mean))
-
-data_rank_high <- data_rank %>%
-  filter(rategroup == "3") %>%
-  arrange(desc(Mean))
-
-# Classify entities by 
-data_rank2 <- data_init_mod %>%
-  group_by(Entity) %>%
-  mutate(rategroup = case_when(Entity %in% data_rank_high$Entity ~ "3",
-                               Entity %in% data_rank_medium$Entity ~ "2",
-                               Entity %in% data_rank_low$Entity ~ "1"))
-
-# Create a line graph to show global trends
-visual2 <- data_rank2 %>%
-  filter(Year > "2009") %>%
-  filter(Entity %in% head(data_rank_high$Entity, 10)|Entity %in% head(data_rank_medium$Entity, 10)|Entity %in% head(data_rank_low$Entity, 10)) %>%
-  filter(!is.na(Death_alcohol_use_disorders)) %>%
-  ggplot(aes(x = as.character(Year), y = Death_alcohol_use_disorders, group = Entity, color = rategroup)) +
-  geom_line() +
-  scale_color_manual(values=c("#FAA19B", "#f66257", "#b73229"))+
-  facet_grid(rategroup~., scales = "free") +
-  xlab("") +
-  ylab("%Death from alcohol")
-
-visual_2_interactive <- ggplotly(visual2) %>%
-  layout(title = list(text = paste0("Death changes from alcohol use disorders 2010-2019 per group",
-                                    "<br>",
-                                    "<sup>")),
-         annotations = list(x = 1, y = -0.1, text = "Data retreived from https://ourworldindata.org/alcohol-consumption.",
-                         showarrow = F, xref='paper', yref='paper',
-                         xanchor='right', yanchor='auto',
-                         xshift=0, yshift=0,
-                         font=list(size=10, color="Black")))
-
-visual_2_interactive
-
-```
-
-****Table****
-```{r TableSummary2, echo = FALSE, warning = FALSE, message = FALSE}
-data_table2 <- data_init_mod %>%
-  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
-  group_by(Entity) %>%
-  summarize(Standard_deviation = sd(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
-  arrange(desc(Standard_deviation)) %>%
-  top_n(20)
-
-# Make the table
-table2 <- knitr::kable(data_table2,
-                       digits = 2,
-                       caption = "The top 20 countries with highest variance in number of death caused by alcohol use disorders.")
-
-table2
-
-```
-
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-#Tony's section
-data <- read.csv("Merge_all_2010_2020_updated.csv")
-
-#wrangle data to only include specific regions and alcohol use disorders in males and females
-alc_sex_regions <- data %>% 
-  dplyr::select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
-         Prevalence_alcohol_use_disorders_female) %>%
-  na.omit() %>%
-  filter(Entity %in% c("African Region (WHO)", "Australia", "China", 
-                       "European Region (WHO)", "United Kingdom", 
-                       "United States"))
-
-#wrangle data to only include income groups and alcohol use disorders in males and females
-alc_sex_income <- data %>%
-  dplyr::select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
-         Prevalence_alcohol_use_disorders_female) %>%
-  na.omit() %>%
-  filter(Entity %in% c("World Bank Low Income", "World Bank Lower Middle Income", 
-                       "World Bank Upper Middle Income", "World Bank High Income"))
-```
-
-**What are the variations in the prevalence of alcohol disorders among men and women across different income groups?**
-
-An association between income and alcohol disorders reveals noteworthy deviations from 2010 to 2019 but it is also important to consider the influence of other socioeconomic factors.
-
-There is a noticeable distinction between the high-income group and other income groups as illustrated in Figure \@ref(fig:IncomeGraph). The percentage of alcohol disorders in the high-income group is significantly greater when compared with other income groups especially among females. This may be a result of females in the high-income group subject to societal expectations or gender roles which lead to increased alcohol related issues. There is a consistent trend indicating a higher prevalence of alcohol disorders among individuals from the higher income groups possibly with work pressures. 
-
-Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors.
-
-When comparing the rate of alcohol use disorders in 2010 and 2019 as shown in \@ref(tab:IncomeTable), both males and females have similar trends. It can be noted there have been decrease in males with alcohol use disorders for the high income group and significantly in lower-middle income group by 0.14%. A parallel trend follows for females in the high and lower-middle income groups. Males in the high income group are approximately double the rate of females with alcohol disorders. However, when compared males and females in the other income groups, the rate of alcohol disorders in males are roughly 4 times the rates in females. 
-
-Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors. Furthermore, it is crucial to understand that the working population in each income group may be not accurate and the income brackets of each group may be skewed. Regardless of the data limitations, there are several variations in the prevalence of alcohol disorders among men and women across different income groups.
-
-```{r IncomeGraph, fig.cap="Percentage of males and females with alcohol use disorders across different income groups", echo = FALSE, warning = FALSE, message = FALSE}
-
-#create variable to plot male data across different income groups 
-male_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
-  geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = Entity)) +
-  labs(x = "Year", y = "% with alcohol use disorders", title = "Male", color = "Income Group") +
-  scale_color_manual(values = c("blue", "green", "orange", "red"),
-                     labels = c("Low", "Lower Middle", "Upper Middle", "High"),
-                     breaks = c("World Bank Low Income", "World Bank Lower Middle Income", 
-                                "World Bank Upper Middle Income", "World Bank High Income")) +
-  theme(legend.position = "none", plot.title = element_text(hjust = 0.5)) +
-  scale_x_continuous(breaks = seq(2010, 2019, 2)) + 
-  scale_y_continuous(breaks = seq(1.75, 3, 0.25))
-
-#create variable to plot female data across different income groups 
-female_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
-  geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = Entity)) +
-  labs(x = "Year", y = "% with alcohol use disorders", title = "Female", color = "Income Group") +
-  scale_color_manual(values = c("blue", "green", "orange", "red"),
-                     labels = c("Low", "Lower Middle", "Upper Middle", "High"),
-                     breaks = c("World Bank Low Income", "World Bank Lower Middle Income", 
-                                "World Bank Upper Middle Income", "World Bank High Income")) +
-  theme(legend.position = "right", plot.title = element_text(hjust = 0.5)) +
-  scale_x_continuous(breaks = seq(2010, 2019, 2)) +
-  scale_y_continuous(breaks = seq(0.4, 1.6, 0.2))
-
-#merge both male and female plots into one figure
-grid.arrange(male_income, female_income, ncol = 1)
-```
-
-```{r IncomeTable, echo = FALSE, warning = FALSE, message = FALSE}
-#create data frame for only 2010 and 2019 data
-alc_sex_income_10_19 <- alc_sex_income %>%
-  filter(Year %in% c(2010,2019))
-
-#create kable table to display data for 2010 and 2019 %
-kable(alc_sex_income_10_19, caption = "Percentage of males and females in different income groups with alcohol use disorders in 2010 and 2019")
-```
-
-**What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?**
-
-By observing Figure \@ref(fig:RegionGraph), across all regions, it is clear there is a higher percentage of males with alcohol disorders than females and this statistic has not changed over the period 2010 to 2019. However, there is no evident similar trends between each region as there are various attributable factors such as evolving social norms, increased alcohol availability and alterations in cultural traditions. Regardless, there is an apparent upsurge over this period in the percentage males with alcohol issues are increasing in Australia, China and the United Kingdom. This is also noticeable among females in Australia but in other regions, there are insignificant increases or dips. 
-
-In Table \@ref(tab:RegionTab), the same deductions can be derived. It can be assumed with the an ever-increasing human population, the percentage of individuals with alcohol use disorders across different regions can differ drastically over the 2010 to 2019 period. Regardless of this limitation, it is evident alcohol is a significant problem in areas around the world especially when the population is increasing.
-
-```{r RegionGraph, fig.cap = "Percentage of males and females with alcohol use disorders among major regions from 2010 to 2019", echo = FALSE, warning = FALSE, message = FALSE}
-#create plot for males and females across different regions using facet_wrap
-ggplot(data = alc_sex_regions, aes(x = Year)) +
-  geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = "Male")) +
-  geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = "Female")) +
-  labs(x = "Year", y = "% with alcohol use disorders", 
-       title = "Percentage of Alcohol Disorders", 
-       color = "Sex") +
-   scale_color_manual(values = c("blue", "hot pink"),
-                     labels = c("Male", "Female"),
-                     breaks = c("Male", "Female")) + 
-  theme(legend.position = "right", plot.title = element_text(hjust = 0.5)) +
-  scale_x_continuous(breaks = seq(2010, 2019, 2)) + 
-  facet_wrap(~ Entity, ncol = 2, scales = "free_y")
-
-```
-
-```{r RegionTab, echo = FALSE, warning = FALSE, message = FALSE}
-#create data frame for only 2010 and 2019 data
-alc_sex_regions_10_19 <- alc_sex_regions %>%
-  filter(Year %in% c(2010,2019))
-
-#create kable table to display data for 2010 and 2019 %
-kable(alc_sex_regions_10_19, caption = "Percentage of males and females in different regions with alcohol use disorders in 2010 and 2019")
-
-```
-
-
-
-
-**Reference** 
-H, Ritchie and M, Roser. (2018) <i>Alcohol Consumption</i>. OurWorldInData.org. https://ourworldindata.org/alcohol-consumption' 
-
-
-
-
-
-
-
-
-
-
-## Question 2
-
-
-
-
-
-# Section Tony {.tabset}
-
-
-## Question 1
-
-
-
-
-## Question 2
-
-
-
-# Section Gloria {.tabset}
-
-
-## Question 1
-
-
-
-
-## Question 2
-
-
-
-
 # Conclusion
 It is evident alcohol use continues to be a significant problem today. Although the data used is a simple snippet during the period 2010 to 2019, there are various external factors providing such widespread results.
 
@@ -913,7 +834,11 @@ Lastly, the conducted analysis does suggest that an increase in personal income 
 
 As we explored the relationship between income and alcohol consumption, as well as factors leading to alcohol-related deaths, valuable insights were discovered surrounding this issue although there may be limitations with external factors not considered in this report. By recognizing the relationship between geographical regions, social factors, and alcohol consumption, we can develop targeted interventions and strategies to mitigate the negative effects of alcohol use disorders. 
 
+# Reference
+- H, Ritchie and M, Roser. (2018) <i>Alcohol Consumption</i>. OurWorldInData.org. [Data set] https://ourworldindata.org/alcohol-consumption
 
-# References
+- Institue for Health Metrics and Evaluation, Global Burden of Disease. (2019). <i>GBD results. </i>. [Data set]. Global Burden of Disease Collaborative Network. http://ghdx.healthdata.org/gbd-results-tool
 
+- WHO, Global Health Observatory. (2022). <i>Indicator: alcohol expenditure as a per cent of total household expenditure. </i>. [Data set]. https://ghoapi.azureedge.net/api/
 
+- World Bank. (2022). <i>World Development Indicators</i>. Global Health Observatory Data Repository - World Health Organization [Data set]. https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators
