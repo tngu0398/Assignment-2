@@ -38,10 +38,3 @@ The variables that may be used to investigate the research questions are:
 
 -to investigate question 2, a multiple linear regression model has been used to examine the relationship between death, consumption, income and household alcohol expense. In addition, scatter plots of death vs consumption per capita, death vs GDP Per Capita, death vs household alcohol expense have been explored, the top 7 countries with the highest percentage deaths in alcohol use disorders have also been analyzed.
 
-
-<<<<<<< HEAD
-The original data sets were obtained from Our World in Data and combined together for this group project.
-
-For the death from alcohol use disorder section, "Entity", "Year", "Code" and "Death_alcohol_use_disorders" were selected for analysis and NA values were excluded during calculation and ploting the graphs.
-=======
->>>>>>> b63f25b80b7bc1884db1b06996a95a56e6d8260e
