@@ -10,7 +10,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(fig.align = "centre")
-
 ```
 
 ```{r LoadLibrary, echo = FALSE, warning = FALSE, message = FALSE}
@@ -34,7 +33,7 @@ data_init_mod <- data_init %>%
 ```
 
 ## Research questions
-Consuming too much alcohol and not being able to control drinking can harm an individual's physical or mental health and safety, causing to family or financial problems. Alcohol use disorders widely affect people across the globe. In this section, we will examine the death caused by alcohol use disorders worldwide and attempt to answer the following two questions:
+Consuming too much alcohol and not being able to control drinking can harm an individual's physical or mental health and safety, causing to family or financial problems. Alcohol use disorders widely affect people across the globe. In this section, we will examine the death caused by alcohol use disorders __directly__ worldwide and attempt to answer the following two questions:
 
 1. Which countries worldwide were most affected by alcohol use disorders?
 
@@ -43,11 +42,11 @@ Consuming too much alcohol and not being able to control drinking can harm an in
 
 ### Countries in cold areas tend to be more affected by alcohol use disorders. {.tabset}
 
-Belarus and Mongolia had the highest death rates of 21.80 and 17.05 per 100,000 people, respectively, followed by Russia, El Salvador, and Greenland (Table \@ref(tab:TableSummary1)).
+Belarus and Mongolia had the highest __direct__ death rates (not including indirect death from suicide) of 21.80 and 17.05 per 100,000 people, respectively, followed by Russia, El Salvador, and Greenland (Table \@ref(tab:TableSummary1)).
 
-Most of the countries with high death rates are in the subarctic or arctic zones in the northern hemisphere (Figure \@ref(fig:Visual1)). This is in line with findings from Figure \@ref(fig:). The cold and dark climates in the countries might have contributed to this observation directly or indirectly.
+Most of the countries with high death rates are in the subarctic or arctic zones in the northern hemisphere (Figure \@ref(fig:Visual1)). This is in line with findings from Figure \@ref(fig:). The cold and dark climates in these countries might have contributed to this observation.
 
-However, countries in hot and humid weather such as Guatemala and Brazil also had high death rates from alcohol abuse. Moreover, countries in the southern subarctic zone with high alcohol consumption levels only showed low to moderate death rates. Therefore, cultural, genetic, historical, and religious factors cannot be ignored when investigating the underlying reason of high death rates in these countries.
+However, countries in hot and humid weather such as Guatemala and Brazil also had high death rates from alcohol abuse. Countries in the southern subarctic zone with high alcohol consumption levels only showed low to moderate death rates. Therefore, cultural, genetic, historical, and religious factors cannot be ignored when investigating the underlying reason of high death rates in these countries.
 
 #### Plot
 
@@ -67,9 +66,9 @@ data_visual1 <- left_join(world, data_visual1, by = "region")
 # Create heat map
 visual_1 <- ggplot(data_visual1,aes(long,lat,group = group, fill = Mean, label = region)) +
   geom_polygon(color="white") +
-  scale_fill_gradient(low="lightblue",high="red", name = "Death")+
+  scale_fill_gradient(low="lightblue",high="red", name = "Death") +
   theme(panel.background = element_rect(fill = "lightgrey")) +
-  xlab("Longtitude") +
+  xlab("") +
   ylab("Latitude") 
 
 # Make plot interactive and add title and subtitle
@@ -79,7 +78,11 @@ visual_1_interactive <- ggplotly(visual_1) %>%
                                     "<sup>",
                                     "Average annual number of death from alcohol use disorder per 100,000 people",
                                     "</sup>")),
-      annotations = list(x = 1, y = -0.1, text = "Caption.....", showarrow = F, xref='paper', yref='paper', xanchor='right', yanchor='auto', xshift=0, yshift=0, font=list(size=15, color="red")))
+      annotations = list(x = 1, y = -0.1, text = "Data retreived from https://ourworldindata.org/alcohol-consumption.",
+                         showarrow = F, xref='paper', yref='paper',
+                         xanchor='right', yanchor='auto',
+                         xshift=0, yshift=5,
+                         font=list(size=10, color="black")))
 
 visual_1_interactive
 
@@ -109,7 +112,7 @@ table1
 
 Table \@ref(tab:TableSummary2) shows the standard deviations of %death from alcohol per country from 2010-2019. Most countries with high variances also had high average %death rates such as Kazakhstan, Guatemala, Russia, Mongolia, etc.
 
-In figure \@ref(fig:Visualtrend), rate groups are classified by the mean annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top 5 countries are shown in each group. Note that the y axis are different in each subplot. (This is to illustrate the trends in each group.) Zooming in onto the global trends, we can see that:
+In figure \@ref(fig:Visualtrend), rate groups are classified by the average annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top 5 countries are shown in each group. Note that the y axis are different in each subplot. (This is to illustrate the trends in each group.) Zooming in onto the global trends, we can see that:
 
 -Most countries with both medium and high average annual %death from alcohol showed some improvements with a decreased %death rate.
 
@@ -117,7 +120,7 @@ In figure \@ref(fig:Visualtrend), rate groups are classified by the mean annual 
 
 
 #### Table
-```{r TableSummary2}
+```{r TableSummary2, echo = FALSE, warning = FALSE, message = FALSE}
 data_table2 <- data_init_mod %>%
   filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
   group_by(Entity) %>%
@@ -177,7 +180,15 @@ visual2 <- data_rank2 %>%
   ylab("%Death from alcohol") +
   ggtitle("Death changes from alcohol use disorders 2010-2019 per group")
 
-visual_2_interactive <- ggplotly(visual2)
+visual_2_interactive <- ggplotly(visual2) %>%
+  layout(title = list(text = paste0("Changes of death from alcohol over 2010-2019",
+                                    "<br>",
+                                    "<sup>")),
+         annotations = list(x = 1, y = -0.1, text = "Data retreived from https://ourworldindata.org/alcohol-consumption.",
+                         showarrow = F, xref='paper', yref='paper',
+                         xanchor='right', yanchor='auto',
+                         xshift=0, yshift=0,
+                         font=list(size=15, color="Black")))
 
 visual_2_interactive
 
