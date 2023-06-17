@@ -7,6 +7,15 @@ output:
   fig_caption: yes
 ---
 
+
+```{r}
+install.packages("rnaturalearth")
+install.packages("dslabs")
+install.packages("rnaturalearthdata")
+
+```
+
+
 ```{r LoadLibrary}
 library(tidyverse)
 library(plotly)
@@ -51,6 +60,7 @@ data_init_mod <- data_init %>%
 
 *Jane's Section* 
 
+
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # read in data set 
@@ -69,6 +79,18 @@ newExtractedData = na.omit(extractedData)
 ```
 
 **Introduction**
+Alcohol usage is a common occurrence in today's society, however the consumption amount varies across geographical regions and can be influenced by different factors. The report explores the relationship between total alcohol consumption and the geographical regions, as well as the significant influence of religion in alcohol usage globally.   
+
+
+**Conclusion** 
+It is evident alcohol use continues to be a significant problem today. Although the data used is a simple snippet during the period 2010 to 2019, there are various external factors providing such widespread results.
+
+Firstly, total alcohol consumption presented diverging trends over time, as some regions experienced growth while others declined.  Particularly, the Middle East, North Africa, and the Greater Indonesia region displayed consistency in low alcohol usage, which suggests a potential influence of religion given the prevalence of Islamic values in these countries. However, further information is needed to determine the relationship between religion and alcohol consumption.
+
+
+**Reference** 
+H, Ritchie and M, Roser. (2018) <i>Alcohol Consumption</i>. OurWorldInData.org. https://ourworldindata.org/alcohol-consumption' 
+
 
 While it is commonly assumed males are the primary consumers of alcohol, this report goes beyond geographical considerations and investigates the prevalence of alcohol disorders among both males and females across various income groups. The aim is to identify any variations and temporal trends in alcohol-related issues.
 
