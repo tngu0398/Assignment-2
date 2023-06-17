@@ -70,6 +70,8 @@ newExtractedData = na.omit(extractedData)
 
 **Introduction**
 
+While it is commonly assumed males are the primary consumers of alcohol, this report goes beyond geographical considerations and investigates the prevalence of alcohol disorders among both males and females across various income groups. The aim is to identify any variations and temporal trends in alcohol-related issues.
+
 *Question 1*
 
 -   How has the total alcohol consumption per capita changed over time in relation to geographical regions?
@@ -509,9 +511,10 @@ table2
 
 
 ## Tony's section
-```{r}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 data <- read.csv("Merge_all_2010_2020_updated.csv")
 
+#wrangle data to only include specific regions and alcohol use disorders in males and females
 alc_sex_regions <- data %>% 
   dplyr::select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
          Prevalence_alcohol_use_disorders_female) %>%
@@ -520,6 +523,7 @@ alc_sex_regions <- data %>%
                        "European Region (WHO)", "United Kingdom", 
                        "United States"))
 
+#wrangle data to only include income groups and alcohol use disorders in males and females
 alc_sex_income <- data %>%
   dplyr::select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
          Prevalence_alcohol_use_disorders_female) %>%
@@ -528,13 +532,21 @@ alc_sex_income <- data %>%
                        "World Bank Upper Middle Income", "World Bank High Income"))
 ```
 
+### What are the variations in the prevalence of alcohol disorders among men and women across different income groups?
 
+An association between income and alcohol disorders reveals noteworthy deviations from 2010 to 2019 but it is also important to consider the influence of other socioeconomic factors.
 
+There is a noticeable distinction between the high-income group and other income groups as illustrated in Figure \@ref(fig:IncomeGraph). The percentage of alcohol disorders in the high-income group is significantly greater when compared with other income groups especially among females. This may be a result of females in the high-income group subject to societal expectations or gender roles which lead to increased alcohol related issues. There is a consistent trend indicating a higher prevalence of alcohol disorders among individuals from the higher income groups possibly with work pressures. 
 
+Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors.
 
-# What are the variations in the prevalence of alcohol disorders among men and women across different income groups?
+When comparing the rate of alcohol use disorders in 2010 and 2019 as shown in \@ref(tab:IncomeTable), both males and females have similar trends. It can be noted there have been decrease in males with alcohol use disorders for the high income group and significantly in lower-middle income group by 0.14%. A parallel trend follows for females in the high and lower-middle income groups. Males in the high income group are approximately double the rate of females with alcohol disorders. However, when compared males and females in the other income groups, the rate of alcohol disorders in males are roughly 4 times the rates in females. 
 
-```{r, echo=FALSE}
+Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors. Furthermore, it is crucial to understand that the working population in each income group may be not accurate and the income brackets of each group may be skewed. Regardless of the data limitations, there are several variations in the prevalence of alcohol disorders among men and women across different income groups.
+
+```{r IncomeGraph, fig.cap="Percentage of males and females with alcohol use disorders across different income groups", echo = FALSE, warning = FALSE, message = FALSE}
+
+#create variable to plot male data across different income groups 
 male_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
   geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = Entity)) +
   labs(x = "Year", y = "% with alcohol use disorders", title = "Male", color = "Income Group") +
@@ -546,6 +558,7 @@ male_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
   scale_x_continuous(breaks = seq(2010, 2019, 2)) + 
   scale_y_continuous(breaks = seq(1.75, 3, 0.25))
 
+#create variable to plot female data across different income groups 
 female_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
   geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = Entity)) +
   labs(x = "Year", y = "% with alcohol use disorders", title = "Female", color = "Income Group") +
@@ -557,28 +570,32 @@ female_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
   scale_x_continuous(breaks = seq(2010, 2019, 2)) +
   scale_y_continuous(breaks = seq(0.4, 1.6, 0.2))
 
+#merge both male and female plots into one figure
 grid.arrange(male_income, female_income, ncol = 1)
 ```
 
-```{r, echo=FALSE}
+```{r IncomeTable, echo = FALSE, warning = FALSE, message = FALSE}
+#create data frame for only 2010 and 2019 data
 alc_sex_income_10_19 <- alc_sex_income %>%
   filter(Year %in% c(2010,2019))
 
-kable(alc_sex_income_10_19, caption = "% of Males and Females with Alcohol Use Disorders in 2010 and 2019")
+#create kable table to display data for 2010 and 2019 %
+kable(alc_sex_income_10_19, caption = "Percentage of males and females in different income groups with alcohol use disorders in 2010 and 2019")
 ```
 
-An association between income and alcohol disorders reveals noteworthy deviations from 2010 to 2019 but it is also important to consider the influence of other socioeconomic factors.
-There is a noticeable distinction between the high-income group and other income groups. The percentage of alcohol disorders is significantly greater or approximately doubled when compared with other income groups. Females in the high-income group may be subject to societal expectations or gender roles which lead to increased alcohol related issues. 
-There is a consistent trend indicating a higher prevalence of alcohol disorders among individuals from the higher income groups possibly with work pressures. Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors. 
+### What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?
 
-# What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?
+By observing Figure \@ref(fig:RegionGraph), across all regions, it is clear there is a higher percentage of males with alcohol disorders than females and this statistic has not changed over the period 2010 to 2019. However, there is no evident similar trends between each region as there are various attributable factors such as evolving social norms, increased alcohol availability and alterations in cultural traditions. Regardless, there is an apparent upsurge over this period in the percentage males with alcohol issues are increasing in Australia, China and the United Kingdom. This is also noticeable among females in Australia but in other regions, there are insignificant increases or dips. 
 
-```{r, echo=FALSE}
+In Table \@ref(tab:RegionTab), the same deductions can be derived. It can be assumed with the an ever-increasing human population, the percentage of individuals with alcohol use disorders across different regions can differ drastically over the 2010 to 2019 period. Regardless of this limitation, it is evident alcohol is a significant problem in areas around the world especially when the population is increasing.
+
+```{r RegionGraph, fig.cap = "Percentage of males and females with alcohol use disorders among major regions from 2010 to 2019", echo = FALSE, warning = FALSE, message = FALSE}
+#create plot for males and females across different regions using facet_wrap
 ggplot(data = alc_sex_regions, aes(x = Year)) +
   geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = "Male")) +
   geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = "Female")) +
   labs(x = "Year", y = "% with alcohol use disorders", 
-       title = "% of Alcohol Disorders of each Major Region", 
+       title = "Percentage of Alcohol Disorders", 
        color = "Sex") +
    scale_color_manual(values = c("blue", "hot pink"),
                      labels = c("Male", "Female"),
@@ -589,12 +606,16 @@ ggplot(data = alc_sex_regions, aes(x = Year)) +
 
 ```
 
-```{r Table4, fig.cap = "\\label{fig:Table4}% of Males and Females with Alcohol Use Disorders for 2010 and 2019",echo = FALSE, warning = FALSE, message = FALSE}
+```{r RegionTab, echo = FALSE, warning = FALSE, message = FALSE}
+#create data frame for only 2010 and 2019 data
 alc_sex_regions_10_19 <- alc_sex_regions %>%
   filter(Year %in% c(2010,2019))
 
-kable(alc_sex_regions_10_19, caption = "% of Males and Females with Alcohol Use Disorders in 2010 and 2019")
+#create kable table to display data for 2010 and 2019 %
+kable(alc_sex_regions_10_19, caption = "Percentage of males and females in different regions with alcohol use disorders in 2010 and 2019")
+
 ```
 
-Across all regions, it is clear there is a higher percentage of males with alcohol disorders than females and this has not changed significantly over the period 2010 to 2019. However, there is no evident similar trends between each region as there are various attributable factors such as evolving social norms, increased alcohol availability and alterations in cultural traditions. Regardless, it is apparent over this period, males with alcohol issues are increasing in Australia, China and the United Kingdom. 
+## Conclusion
 
+Secondly, it is clear both males and females in the high-income group have a higher percentage with alcohol use disorders. Additionally, the temporal trend in the prevalence of alcohol disorders across major regions have shown Australia, China and the UK to have significant rises in males with alcohol use orders with other regions showing minor decline. Furthermore, the rate of females with alcohol use disorders have not altered drastically.
