@@ -2,12 +2,22 @@
 title: "Assignment 2"
 authors: "Tony Nguyen, Jane Nguyen, Shiyuan Zhang, Naveed Aamir"
 date: "2023-06-07"
-output: html_document
+output: 
+  bookdown:html_document
 ---
 
 ```{r setup, include = FALSE}
 
-# added libraries to potentially use 
+#packages 
+
+
+```
+
+
+
+```{r setup, include = FALSE}
+
+#loading libraries
 library(ISLR)
 library(MASS)
 library(tidyr)
@@ -24,6 +34,7 @@ library(mapdata)
 library(knitr)
 library(kableExtra)
 library(countrycode)
+library(bookdown)
 
 knitr::opts_chunk$set(echo = TRUE)
 
@@ -48,18 +59,28 @@ newExtractedData = na.omit(extractedData)
 
 ```
 
-Research Questions:   
-- How has the total alcohol consumption per capita changed over time in relation to geographical regions?        
-- How does the influence of religion relate to variations in total alcohol consumption per capita across different locations?     
+**Introduction** 
 
+
+
+
+*Question 1*     
+
+- How has the total alcohol consumption per capita changed over time in relation to geographical regions?  
+
+**Analysis**     
+
+Table 1 \@ref(tab:Table 1) presented the overall median global growth of alcohol consumption from 2000 to 2018. However, Figure 1 \@ref(fig:Figure 1) revealed that regions were still experiencing diverging patterns during this period. Regions such as 'East Asia and Pacific', 'South Asia', 'North America' and 'Middle East and North Africa' increased in alcohol consumption, while other regions like 'Europe and Central Asia', 'Latin America and Caribbean' and 'Sub-Saharan Africa' experienced declines.      
+
+Table 1 \@ref(tab:Table 1) provided insights of the average (6.18L) and median (6.11L) alcohol consumption in 2010, this year stands as the highest in total consumption. Similarly, Figure 2 \@ref(fig:Figure 2) presents the visual depiction of countries around the world reaching their highest in 2010, followed by subsequent decrease.      
 
 ---
 
 **Table 1**     
 
-<i>Table 1</i> displays the IQR, the range, Mean and Median values of total alcohol consumption in 2000, 2005, 2010, 2015 and 2018     
+Table 1 \@ref(tab:Table 1) displays the IQR, the range, Mean and Median values of total alcohol consumption in 2000, 2005, 2010, 2015 and 2018     
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+```{r Table 1, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # 2000 data
 y2000 = newExtractedData[newExtractedData $ Year == 2000, ]
@@ -127,7 +148,7 @@ kable(totalCombinedSummary, format = "html", align = "c", caption = "Alcohol Con
 
 **Figure 1**      
 
-<i>Figure 1</i> displays the trends in total alcohol consumption across geographical regions from 2000 to 2018, with the World's rate shown as a dot-dashed line      
+Figure 1 \@ref(fig:Figure 1) displays the trends in total alcohol consumption across geographical regions from 2000 to 2018, with the World's rate shown as a dot-dashed line      
 
 - 'Europe and Central Asia' region experienced a notable decrease in consumption, while 'Latin America and Caribbean' and 'Sub-Saharan Africa' regions saw slight declines         
 
@@ -135,7 +156,7 @@ kable(totalCombinedSummary, format = "html", align = "c", caption = "Alcohol Con
 
 - 'North America' and 'Middle East and North Africa' regions had minor increases, however the 'Middle East and North Africa' remained the lowest   
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+```{r Figure 1, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # selecting specific regions 
 specifiedRegions = c("World", "East Asia and Pacific", "Europe and Central Asia", "Latin America and Caribbean", "Middle East and North Africa", "North America", "South Asia", "Sub-Saharan Africa")
@@ -152,9 +173,25 @@ regionChart
 
 ---
 
+*Question 2*      
+
+- How does the influence of religion relate to variations in total alcohol consumption per capita across different locations?     
+
+**Analysis**     
+
+Figure 1 \@ref(fig:Figure 1) highlighted the region 'Middle East and North Africa' as having had experienced the least growth and changes from 2000 to 2018 in comparison to the others. Notably, 'Middle East and North Africa' consistently exhibited the lowest alcohol consumption (consuming less than 1L each year). Similarly, Figure 2 \@ref(fig:Figure 2) shows the geographical locations: the Middle East, North Africa and the Greater Indonesia to have had minor changes over the years. 
+
+Table 2 \@ref(tab:Table 2) demonstrates consistency among the lowest 10 countries in alcohol consumption over the years, with only minor variations. Interestingly, a significant number of these countries are known for their devotion of Islamic values.
+
+Although the impact of religion on alcohol consumption cannot be definitively determined without further global religious information. Figure 1 \@ref(fig:Figure 1), Table 2 \@ref(tab:Table 2) and Figure 2 \@ref(fig:Figure 2) suggest that these locations (the Middle East, North Africa and the Greater Indonesia) may experience lower alcohol consumption due to religious beliefs.     
+
+
+
+---
+
 **Figure 2**     
 
-<i>Figure 2</i> presents the alcohol consumption per capita in 2000, 2005, 2010, 2015 and 2018. Some notable observations are:     
+Figure 2 \@ref(fig:Figure 2) presents the alcohol consumption per capita in 2000, 2005, 2010, 2015 and 2018. Some notable observations are:     
 
 - In 2000, Russia showed high alcohol consumption but over time it declined to 11.19L in 2018    
 
@@ -162,7 +199,7 @@ regionChart
 
 - From 2000 to 2018, the majority of North Africa, the Middle East and the Greater Indonesia regions presented minimal changes in alcohol consumption - this may be attributed by Islamic beliefs as the Quran deems drinking as haram      
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+```{r Figure 2, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # loading world map 
 worldMap = map_data("world")
@@ -229,9 +266,9 @@ plot(dataMap2018)
 
 **Table 2**     
 
-<i>Table 2</i> presents the lowest 10 countries in 2000, 2005, 2010, 2015 and 2018 in alcohol consumption 
+Table 2 \@ref(tab:Table 2) presents the lowest 10 countries in 2000, 2005, 2010, 2015 and 2018 in alcohol consumption 
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
+```{r Table 2, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # calculating the total alcohol consumption in 2000
 total2000 = extractedData2000 %>% group_by(Entity) %>% summarize(Total = sum(Total_alcohol_consumption_per_capita))
@@ -297,18 +334,4 @@ kable(combinedData, format = "html", align = "c", caption = "Bottom 10 Countries
 
 ```
 
-
----
-
-**Analysis**     
-
-<i>Table 1</i> presented the overall median global growth of alcohol consumption from 2000 to 2018. However, <i>Figure 1</i> revealed that regions were still experiencing diverging patterns during this period. Regions such as 'East Asia and Pacific', 'South Asia', 'North America' and 'Middle East and North Africa' increased in alcohol consumption, while other regions like 'Europe and Central Asia', 'Latin America and Caribbean' and 'Sub-Saharan Africa' experienced declines.      
-
-<i>Table 1</i> provided insights of the average (6.18L) and median (6.11L) alcohol consumption in 2010, this year stands as the highest in total consumption. Similarly, <i>Figure 2</i> presents the visual depiction of countries around the world reaching their highest in 2010, followed by subsequent decrease.      
-
-<i>Figure 1</i> highlighted the region 'Middle East and North Africa' as having had experienced the least growth and changes from 2000 to 2018 in comparison to the others. Notably, 'Middle East and North Africa' consistently exhibited the lowest alcohol consumption (consuming less than 1L each year). Similarly, <i>Figure 2</i> shows the geographical locations: the Middle East, North Africa and the Greater Indonesia to have had minor changes over the years. 
-
-<i>Table 2</i> demonstrates consistency among the lowest 10 countries in alcohol consumption over the years, with only minor variations. Interestingly, a significant number of these countries are known for their devotion of Islamic values.
-
-Although the impact of religion on alcohol consumption cannot be definitively determined without further global religious information, <i>Figure 1</i>, <i>Table 2</i> and <i>Figure 2</i> suggest that these locations (the Middle East, North Africa and the Greater Indonesia) may experience lower alcohol consumption due to religious beliefs.     
 
