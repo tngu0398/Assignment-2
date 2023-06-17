@@ -7,9 +7,7 @@ output:
   fig_caption: yes
 ---
 
-```{r}
-install.packages("rnaturalearth")
-```
+
 
 
 ```{r LoadLibrary}
@@ -48,11 +46,13 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 data_init <- read.csv("Alcohol/Merge_all_2010_2020_updated.csv")
 
 #Subset dataset for the section
-data_init_mod <- data_init %>%
-  select(c("Entity", "Year", "Code", "Death_alcohol_use_disorders"))
+data_init_mod <- data_init[, c("Entity", "Year", "Code", "Death_alcohol_use_disorders")]
 
 ```
 
+# Introduction
+
+Overconsumption of alcohol can harm an individual's health and safety, leading to relationships and/or financial problems. Alcohol use disorders affect people globally and causes death every year either directly, from alcohol-induced diseases such as liver diseases, neurodegenerative disorders, or heart failure, or indirectly from suicide.
 
 *Jane's Section* 
 
@@ -602,4 +602,11 @@ kable(alc_sex_regions_10_19, caption = "% of Males and Females with Alcohol Use 
 ```
 
 Across all regions, it is clear there is a higher percentage of males with alcohol disorders than females and this has not changed significantly over the period 2010 to 2019. However, there is no evident similar trends between each region as there are various attributable factors such as evolving social norms, increased alcohol availability and alterations in cultural traditions. Regardless, it is apparent over this period, males with alcohol issues are increasing in Australia, China and the United Kingdom. 
+
+# Conclusion
+
+Deaths from alcohol tend to be more prevalent in countries with cold and dry climates. However, social, cultural, and economic factors are more of our interest to investigate because, whereas we cannot do much about a country’s weather, we could understand what is causing people to drink too much, which would potentially allow us to design educational and addiction treatment programs to offer support.
+
+# References
+
 
