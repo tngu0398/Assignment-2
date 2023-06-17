@@ -45,6 +45,10 @@ library(plotly, quietly = T)
 
 ## INTRODUCTION
 
+While alcohol is often consumed for leisure, relaxation, and celebration, it unfortunately becomes a crutch for temporarily alleviating stress, grief, and sorrow. Furthermore, the consumption and types of alcohol have also become associated with social status. However, it is important to acknowledge that alcohol consumption can also lead to various disorders that may result in fatal consequences.
+
+Thus, this report delves into the influence of income on alcohol consumption, explores the contributing variables to alcohol-related deaths, and discusses countries with the highest percentage of deaths attributed to alcohol use disorders.
+
 ```{r readData and review, echo=FALSE}
 # Read data and review
 alcohol <- read.csv("Data/alcohol.csv")
@@ -315,7 +319,9 @@ knitr::kable(countries_deaths_highest, caption = "The top 7 countries with the h
 
 # Conclusion
 
+Lastly, the conducted analysis does suggest that an increase in personal income does increase the tendency to consume more alcohol. However, maybe because of a limit on how much alcohol can be consumed by a person, the consumption of alcohol does not increase further beyond a certain income threshold. The exploration of the data available suggests that percentage death in alcohol use disorders increases with an increase in alcohol consumption and household alcohol expense, which would make sense as both alcohol consumption and alcohol expense are directly related. On the contrary, percentage deaths from alcohol use disorders actually decreases with an increase in GDP Per Capita, which is also reiterated when we explored some of the countries with the highest percentage of deaths from alcohol use disorders in 2015. The insights obtained in this report are suggestive that death may be dependent on additional predictors such as consumption of unsafe and low quality alcohol, comparatively poorer individual health, lack of quality and affordable healthcare and provides highly relevant topics for future research.
 
+As we explored the relationship between income and alcohol consumption, as well as factors leading to alcohol-related deaths, valuable insights were discovered surrounding this issue although there may be limitations with external factors not considered in this report. By recognizing the relationship between geographical regions, social factors, and alcohol consumption, we can develop targeted interventions and strategies to mitigate the negative effects of alcohol use disorders. 
 
 
 # References
