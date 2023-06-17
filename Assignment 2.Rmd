@@ -22,7 +22,7 @@ library("maps")
 library("dslabs")
 ```
 
-```{r LoadData2}
+```{r LoadData2, echo = FALSE, warning = FALSE, message = FALSE}
 #Load merged data
 data_init <- read.csv("Alcohol/Merge_all_2010_2020_updated.csv")
 
@@ -50,7 +50,7 @@ However, countries in hot and humid weather such as Guatemala and Brazil also ha
 
 #### Plot
 
-```{r Visual1, fig.cap = "Visual1"}
+```{r Visual1, fig.cap = "Visual1", echo = FALSE, warning = FALSE, message = FALSE}
 # Load world map data
 world<-map_data("world")
 
@@ -90,7 +90,7 @@ visual_1_interactive
 
 #### Table
 
-```{r TableSummary1}
+```{r TableSummary1, echo = FALSE, warning = FALSE, message = FALSE}
 
 data_table1 <- data_init_mod %>%
   filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
@@ -138,7 +138,7 @@ table2
 ```
 
 #### Plot
-```{r Visual_trend, fig.cap= "Visualtrend"}
+```{r Visual_trend, fig.cap= "Visualtrend", echo = FALSE, warning = FALSE, message = FALSE}
 # Classfy groups depending on the mean %death over 2010-2019
 data_rank <- data_init_mod %>%
   group_by(Entity) %>%
