@@ -7,11 +7,6 @@ output:
   fig_caption: yes
 ---
 
-```{r}
-install.packages("rnaturalearth")
-```
-
-
 ```{r LoadLibrary}
 library(tidyverse)
 library(plotly)
@@ -517,8 +512,8 @@ table2
 ```{r}
 data <- read.csv("Merge_all_2010_2020_updated.csv")
 
-alc_sex_regions <- data %>%
-  select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
+alc_sex_regions <- data %>% 
+  dplyr::select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
          Prevalence_alcohol_use_disorders_female) %>%
   na.omit() %>%
   filter(Entity %in% c("African Region (WHO)", "Australia", "China", 
@@ -526,7 +521,7 @@ alc_sex_regions <- data %>%
                        "United States"))
 
 alc_sex_income <- data %>%
-  select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
+  dplyr::select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
          Prevalence_alcohol_use_disorders_female) %>%
   na.omit() %>%
   filter(Entity %in% c("World Bank Low Income", "World Bank Lower Middle Income", 
@@ -594,7 +589,7 @@ ggplot(data = alc_sex_regions, aes(x = Year)) +
 
 ```
 
-```{r, echo=FALSE}
+```{r Table4, fig.cap = "\\label{fig:Table4}% of Males and Females with Alcohol Use Disorders for 2010 and 2019",echo = FALSE, warning = FALSE, message = FALSE}
 alc_sex_regions_10_19 <- alc_sex_regions %>%
   filter(Year %in% c(2010,2019))
 
