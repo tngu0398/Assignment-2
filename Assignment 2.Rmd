@@ -78,15 +78,14 @@ newExtractedData = na.omit(extractedData)
 ```
 
 **Introduction**
-Alcohol usage is a common occurrence in today's society, however the consumption amount varies across geographical regions and can be influenced by different factors. The report explores the relationship between total alcohol consumption and the geographical regions, as well as the significant influence of religion in alcohol usage globally.    
+Alcohol usage is a common occurrence in today's society, however the consumption amount varies across geographical regions and can be influenced by different factors. The report explores the relationship between total alcohol consumption and the geographical regions, as well as the significant influence of religion in alcohol usage globally.   
 
 
 **Conclusion** 
-Total alcohol consumption presented diverging trends over time, as some regions experienced growth while others declined.  Particularly, the Middle East, North Africa, and the Greater Indonesia region displayed concistency in low alcohol usage, which suggests a potential influence of religion given the prevalence of Islamic values in these countries. However, further information is needed to determine the relationship between religion and alcohol consumption. 
+Total alcohol consumption presented diverging trends over time, as some regions experienced growth while others declined.  Particularly, the Middle East, North Africa, and the Greater Indonesia region displayed consistency in low alcohol usage, which suggests a potential influence of religion given the prevalence of Islamic values in these countries. However, further information is needed to determine the relationship between religion and alcohol consumption. 
 
 
 **Reference** 
-
 H, Ritchie and M, Roser. (2018) <i>Alcohol Consumption</i>. OurWorldInData.org. https://ourworldindata.org/alcohol-consumption' 
 
 
