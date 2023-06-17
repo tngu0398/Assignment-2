@@ -1,36 +1,60 @@
 ---
-title: "Assignment 2"
-authors: "Tony Nguyen, Jane Nguyen, Shiyuan Zhang, Naveed Aamir"
+title: "Assignment2_draft"
+author: "Shiyuan Zhang"
 date: "2023-06-07"
 output: 
-  bookdown::html_document2: 
+  bookdown::html_document2:
   fig_caption: yes
 ---
 
+```{r}
+install.packages("rnaturalearth")
+```
 
-```{r setup, include = FALSE}
 
-#loading libraries
+```{r LoadLibrary}
+library(tidyverse)
+library(plotly)
+library(bookdown)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(maps)
+library(dslabs)
+library(knitr)
+library(scales)
+library(dplyr)
+library(gridExtra)
 library(ISLR)
 library(MASS)
 library(tidyr)
-library(tidyverse)
 library(ggplot2)
 library(ggthemes)
 library(ggrepel)
-library(dplyr)
-library(tidyverse)
 library(ggmap)
-library(maps)
 library(mapdata) 
-library(knitr)
 library(kableExtra)
 library(countrycode)
-library(bookdown)
-
-knitr::opts_chunk$set(echo = TRUE)
 
 ```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+```{r LoadData2}
+#Load merged data
+data_init <- read.csv("Alcohol/Merge_all_2010_2020_updated.csv")
+
+#Subset dataset for the section
+data_init_mod <- data_init %>%
+  select(c("Entity", "Year", "Code", "Death_alcohol_use_disorders"))
+
+```
+
+
+*Jane's Section* 
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
@@ -316,3 +340,267 @@ combinedData = combinedData %>% mutate(across(everything(), as.character)) %>% r
 kable(combinedData, format = "html", align = "c", caption = "Bottom 10 Countries in Alcohol Consumption (Litres)") %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
 ```
+
+
+
+# Introduction
+
+
+## Gloria'section
+
+### Research questions
+Consuming too much alcohol and not being able to control drinking can harm an individual's physical or mental health and safety, causing to family or financial problems. Alcohol use disorders widely affect people across the globe. In this section, we will examine the death caused by alcohol use disorders __directly__ worldwide and attempt to answer the following two questions:
+
+1. Which countries worldwide were most affected by alcohol use disorders?
+
+2. Has the situation improved or got worse over the past ten years?
+
+
+### Countries in cold areas tend to be more affected by alcohol use disorders. {.tabset}
+
+Belarus and Mongolia had the highest __direct__ death rates (not including indirect death from suicide) of 21.80 and 17.05 per 100,000 people, respectively, followed by Russia, El Salvador, and Greenland (Table \@ref(tab:TableSummary1)).
+
+Most of the countries with high death rates are in the subarctic or arctic zones in the northern hemisphere (Figure \@ref(fig:Visual1)). This is in line with findings from section 1. The cold and dark climates in these countries might have contributed to this observation.
+
+However, countries in hot and humid weather such as Guatemala and Brazil also had high death rates from alcohol abuse. Countries in the southern subarctic zone with high alcohol consumption levels only showed low to moderate death rates. Therefore, cultural, genetic, historical, and religious factors cannot be ignored when investigating the underlying reason of high death rates in these countries.
+
+#### Plot
+
+```{r Visual1, fig.cap = "\\label{fig:Visual1}Annual Death rates from alcohol", echo = FALSE, warning = FALSE, message = FALSE}
+# Load world map data
+world<-map_data("world")
+
+# Create data set and merge with map data
+data_visual1 <- data_init_mod %>%
+  rename("region" = "Entity") %>%
+  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
+  group_by(region) %>%
+  summarize(Mean = mean(Death_alcohol_use_disorders, na.rm = TRUE))
+
+data_visual1 <- left_join(world, data_visual1, by = "region")
+
+# Create heat map
+visual_1 <- ggplot(data_visual1,aes(long,lat,group = group, fill = Mean, label = region)) +
+  geom_polygon(color="white") +
+  scale_fill_gradient(low="lightblue",high="red", name = "Death") +
+  theme(panel.background = element_rect(fill = "lightgrey")) +
+  xlab("") +
+  ylab("Latitude") 
+
+# Make plot interactive and add title and subtitle
+visual_1_interactive <- ggplotly(visual_1) %>%
+  layout(title = list(text = paste0("Death caused by alcohol use disorders",
+                                    "<br>",
+                                    "<sup>",
+                                    "Average annual number of death from alcohol use disorder per 100,000 people",
+                                    "</sup>")),
+      annotations = list(x = 1, y = -0.1, text = "Data retreived from https://ourworldindata.org/alcohol-consumption.",
+                         showarrow = F, xref='paper', yref='paper',
+                         xanchor='right', yanchor='auto',
+                         xshift=0, yshift=5,
+                         font=list(size=10, color="black")))
+
+visual_1_interactive
+
+```
+
+#### Table
+
+```{r TableSummary1, echo = FALSE, warning = FALSE, message = FALSE}
+
+data_table1 <- data_init_mod %>%
+  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
+  group_by(Entity) %>%
+  summarize(Mean = mean(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
+  arrange(desc(Mean)) %>%
+  top_n(20)
+
+# Make the table
+table1 <- knitr::kable(data_table1,
+                       digits = 2,
+                       caption = "The top 20 countries with highest annual number of death caused by alcohol use disorders.")
+
+table1
+```
+
+
+### The numbers fluctuate, but we have seen some improvements. {.tabset}
+
+Table \@ref(tab:TableSummary2) shows the standard deviations of %death from alcohol per country from 2010-2019. Most countries with high variances also had high average %death rates such as Kazakhstan, Guatemala, Russia, Mongolia, etc.
+
+In figure \@ref(fig:Visualtrend), rate groups are classified by the average annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top ten countries are shown in each group. __Note that the y axis are different in each subplot.__ This is to illustrate the trends in each group.
+
+Zooming in onto the global trends, we can see that:
+
+- Most countries with both medium and high average annual %death from alcohol showed some improvements with a decreased %death rate.
+
+- Countries with low average annual %death from alcohol had more fluctuations and some even showed a slight increase.
+
+
+#### Plot
+```{r Visualtrend, fig.cap= "\\label{fig:Visualtrend}Changes of death rates from alcohol in selected countries 2010-2019", echo = FALSE, warning = FALSE, message = FALSE}
+# Classfy groups depending on the mean %death over 2010-2019
+data_rank <- data_init_mod %>%
+  group_by(Entity) %>%
+  summarize(Mean = mean(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
+  mutate(rategroup = case_when(Mean >=2.752 ~ "3",
+                               Mean <2.752 & Mean >0.920 ~ "2",
+                               Mean <=0.920 ~ "1"))
+
+# Create list of countries with high, medium, low %death rates
+data_rank_low <- data_rank %>%
+  filter(rategroup == "1") %>%
+  arrange(desc(Mean))
+
+data_rank_medium <- data_rank %>%
+  filter(rategroup == "2") %>%
+  arrange(desc(Mean))
+
+data_rank_high <- data_rank %>%
+  filter(rategroup == "3") %>%
+  arrange(desc(Mean))
+
+# Classify entities by 
+data_rank2 <- data_init_mod %>%
+  group_by(Entity) %>%
+  mutate(rategroup = case_when(Entity %in% data_rank_high$Entity ~ "3",
+                               Entity %in% data_rank_medium$Entity ~ "2",
+                               Entity %in% data_rank_low$Entity ~ "1"))
+
+# Create a line graph to show global trends
+visual2 <- data_rank2 %>%
+  filter(Year > "2009") %>%
+  filter(Entity %in% head(data_rank_high$Entity, 10)|Entity %in% head(data_rank_medium$Entity, 10)|Entity %in% head(data_rank_low$Entity, 10)) %>%
+  filter(!is.na(Death_alcohol_use_disorders)) %>%
+  ggplot(aes(x = as.character(Year), y = Death_alcohol_use_disorders, group = Entity, color = rategroup)) +
+  geom_line() +
+  scale_color_manual(values=c("#FAA19B", "#f66257", "#b73229"))+
+  facet_grid(rategroup~., scales = "free") +
+  xlab("") +
+  ylab("%Death from alcohol")
+
+visual_2_interactive <- ggplotly(visual2) %>%
+  layout(title = list(text = paste0("Death changes from alcohol use disorders 2010-2019 per group",
+                                    "<br>",
+                                    "<sup>")),
+         annotations = list(x = 1, y = -0.1, text = "Data retreived from https://ourworldindata.org/alcohol-consumption.",
+                         showarrow = F, xref='paper', yref='paper',
+                         xanchor='right', yanchor='auto',
+                         xshift=0, yshift=0,
+                         font=list(size=10, color="Black")))
+
+visual_2_interactive
+
+```
+
+#### Table
+```{r TableSummary2, echo = FALSE, warning = FALSE, message = FALSE}
+data_table2 <- data_init_mod %>%
+  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
+  group_by(Entity) %>%
+  summarize(Standard_deviation = sd(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
+  arrange(desc(Standard_deviation)) %>%
+  top_n(20)
+
+# Make the table
+table2 <- knitr::kable(data_table2,
+                       digits = 2,
+                       caption = "The top 20 countries with highest variance in number of death caused by alcohol use disorders.")
+
+table2
+
+```
+
+
+
+
+## Tony's section
+```{r}
+data <- read.csv("Merge_all_2010_2020_updated.csv")
+
+alc_sex_regions <- data %>%
+  select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
+         Prevalence_alcohol_use_disorders_female) %>%
+  na.omit() %>%
+  filter(Entity %in% c("African Region (WHO)", "Australia", "China", 
+                       "European Region (WHO)", "United Kingdom", 
+                       "United States"))
+
+alc_sex_income <- data %>%
+  select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
+         Prevalence_alcohol_use_disorders_female) %>%
+  na.omit() %>%
+  filter(Entity %in% c("World Bank Low Income", "World Bank Lower Middle Income", 
+                       "World Bank Upper Middle Income", "World Bank High Income"))
+```
+
+
+
+
+
+# What are the variations in the prevalence of alcohol disorders among men and women across different income groups?
+
+```{r, echo=FALSE}
+male_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = Entity)) +
+  labs(x = "Year", y = "% with alcohol use disorders", title = "Male", color = "Income Group") +
+  scale_color_manual(values = c("blue", "green", "orange", "red"),
+                     labels = c("Low", "Lower Middle", "Upper Middle", "High"),
+                     breaks = c("World Bank Low Income", "World Bank Lower Middle Income", 
+                                "World Bank Upper Middle Income", "World Bank High Income")) +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(2010, 2019, 2)) + 
+  scale_y_continuous(breaks = seq(1.75, 3, 0.25))
+
+female_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = Entity)) +
+  labs(x = "Year", y = "% with alcohol use disorders", title = "Female", color = "Income Group") +
+  scale_color_manual(values = c("blue", "green", "orange", "red"),
+                     labels = c("Low", "Lower Middle", "Upper Middle", "High"),
+                     breaks = c("World Bank Low Income", "World Bank Lower Middle Income", 
+                                "World Bank Upper Middle Income", "World Bank High Income")) +
+  theme(legend.position = "right", plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(2010, 2019, 2)) +
+  scale_y_continuous(breaks = seq(0.4, 1.6, 0.2))
+
+grid.arrange(male_income, female_income, ncol = 1)
+```
+
+```{r, echo=FALSE}
+alc_sex_income_10_19 <- alc_sex_income %>%
+  filter(Year %in% c(2010,2019))
+
+kable(alc_sex_income_10_19, caption = "% of Males and Females with Alcohol Use Disorders in 2010 and 2019")
+```
+
+An association between income and alcohol disorders reveals noteworthy deviations from 2010 to 2019 but it is also important to consider the influence of other socioeconomic factors.
+There is a noticeable distinction between the high-income group and other income groups. The percentage of alcohol disorders is significantly greater or approximately doubled when compared with other income groups. Females in the high-income group may be subject to societal expectations or gender roles which lead to increased alcohol related issues. 
+There is a consistent trend indicating a higher prevalence of alcohol disorders among individuals from the higher income groups possibly with work pressures. Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors. 
+
+# What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?
+
+```{r, echo=FALSE}
+ggplot(data = alc_sex_regions, aes(x = Year)) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = "Male")) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = "Female")) +
+  labs(x = "Year", y = "% with alcohol use disorders", 
+       title = "% of Alcohol Disorders of each Major Region", 
+       color = "Sex") +
+   scale_color_manual(values = c("blue", "hot pink"),
+                     labels = c("Male", "Female"),
+                     breaks = c("Male", "Female")) + 
+  theme(legend.position = "right", plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(2010, 2019, 2)) + 
+  facet_wrap(~ Entity, ncol = 2, scales = "free_y")
+
+```
+
+```{r, echo=FALSE}
+alc_sex_regions_10_19 <- alc_sex_regions %>%
+  filter(Year %in% c(2010,2019))
+
+kable(alc_sex_regions_10_19, caption = "% of Males and Females with Alcohol Use Disorders in 2010 and 2019")
+```
+
+Across all regions, it is clear there is a higher percentage of males with alcohol disorders than females and this has not changed significantly over the period 2010 to 2019. However, there is no evident similar trends between each region as there are various attributable factors such as evolving social norms, increased alcohol availability and alterations in cultural traditions. Regardless, it is apparent over this period, males with alcohol issues are increasing in Australia, China and the United Kingdom. 
+
