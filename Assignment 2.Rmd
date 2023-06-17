@@ -7,6 +7,14 @@ output:
   fig_caption: yes
 ---
 
+```{r}
+install.packages("rnaturalearth")
+install.packages("dslabs")
+install.packages("rnaturalearthdata")
+
+```
+
+
 
 ```{r LoadLibrary}
 library(tidyverse)
@@ -44,13 +52,14 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 data_init <- read.csv("Alcohol/Merge_all_2010_2020_updated.csv")
 
 #Subset dataset for the section
+
 data_init_mod <- data_init %>%
   c("Entity", "Year", "Code", "Death_alcohol_use_disorders")
 
+data_init_mod <- data_init[, c("Entity", "Year", "Code", "Death_alcohol_use_disorders")]
+
 ```
 
-
-*Jane's Section* 
 
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
@@ -73,16 +82,9 @@ newExtractedData = na.omit(extractedData)
 **Introduction**
 Alcohol usage is a common occurrence in today's society, however the consumption amount varies across geographical regions and can be influenced by different factors. The report explores the relationship between total alcohol consumption and the geographical regions, as well as the significant influence of religion in alcohol usage globally.   
 
+While it is commonly assumed males are the primary consumers of alcohol, this report goes beyond geographical considerations and investigates the prevalence of alcohol disorders among both males and females across various income groups. The aim is to identify any variations and temporal trends in alcohol-related issues.
 
-**Conclusion** 
-It is evident alcohol use continues to be a significant problem today. Although the data used is a simple snippet during the period 2010 to 2019, there are various external factors providing such widespread results.
-
-Firstly, total alcohol consumption presented diverging trends over time, as some regions experienced growth while others declined.  Particularly, the Middle East, North Africa, and the Greater Indonesia region displayed consistency in low alcohol usage, which suggests a potential influence of religion given the prevalence of Islamic values in these countries. However, further information is needed to determine the relationship between religion and alcohol consumption.
-
-
-**Reference** 
-H, Ritchie and M, Roser. (2018) <i>Alcohol Consumption</i>. OurWorldInData.org. https://ourworldindata.org/alcohol-consumption' 
-
+Moreover, overconsumption of alcohol can harm an individual's health and safety, leading to relationships and/or financial problems. Alcohol use disorders affect people globally and causes death every year either directly, from alcohol-induced diseases such as liver diseases, neurodegenerative disorders, or heart failure, or indirectly from suicide.
 
 *Question 1*
 
@@ -94,7 +96,6 @@ Table \@ref(tab:Table1) presented the overall median global growth of alcohol co
 
 Table \@ref(tab:Table1) provided insights of the average (6.18L) and median (6.11L) alcohol consumption in 2010, this year stands as the highest in total consumption. Similarly, Figure 2 presents the visual depiction of countries around the world reaching their highest in 2010, followed by subsequent decrease.
 
-------------------------------------------------------------------------
 
 **Table 1**
 
@@ -163,7 +164,7 @@ kable(totalCombinedSummary, format = "html", align = "c", caption = "Alcohol Con
 
 ```
 
-------------------------------------------------------------------------
+
 
 **Figure 1**
 
@@ -189,7 +190,7 @@ regionChart
 
 ```
 
-------------------------------------------------------------------------
+
 
 *Question 2*
 
@@ -203,7 +204,7 @@ Table \@ref(tab:Table2) demonstrates consistency among the lowest 10 countries i
 
 Although the impact of religion on alcohol consumption cannot be definitively determined without further global religious information. Figure \@ref(fig:Figure1), Table \@ref(tab:Table2) and Figure 2 suggest that these locations (the Middle East, North Africa and the Greater Indonesia) may experience lower alcohol consumption due to religious beliefs.
 
-------------------------------------------------------------------------
+
 
 **Figure 2**
 
@@ -277,7 +278,7 @@ plot(dataMap2018)
 
 ```
 
-------------------------------------------------------------------------
+
 
 **Table 2**
 
@@ -349,14 +350,9 @@ kable(combinedData, format = "html", align = "c", caption = "Bottom 10 Countries
 
 ```
 
+**Gloria'section**
 
-
-# Introduction
-
-
-## Gloria'section
-
-### Research questions
+***Research questions***
 Consuming too much alcohol and not being able to control drinking can harm an individual's physical or mental health and safety, causing to family or financial problems. Alcohol use disorders widely affect people across the globe. In this section, we will examine the death caused by alcohol use disorders __directly__ worldwide and attempt to answer the following two questions:
 
 1. Which countries worldwide were most affected by alcohol use disorders?
@@ -364,7 +360,7 @@ Consuming too much alcohol and not being able to control drinking can harm an in
 2. Has the situation improved or got worse over the past ten years?
 
 
-### Countries in cold areas tend to be more affected by alcohol use disorders. {.tabset}
+***Countries in cold areas tend to be more affected by alcohol use disorders. {.tabset}***
 
 Belarus and Mongolia had the highest __direct__ death rates (not including indirect death from suicide) of 21.80 and 17.05 per 100,000 people, respectively, followed by Russia, El Salvador, and Greenland (Table \@ref(tab:TableSummary1)).
 
@@ -372,7 +368,7 @@ Most of the countries with high death rates are in the subarctic or arctic zones
 
 However, countries in hot and humid weather such as Guatemala and Brazil also had high death rates from alcohol abuse. Countries in the southern subarctic zone with high alcohol consumption levels only showed low to moderate death rates. Therefore, cultural, genetic, historical, and religious factors cannot be ignored when investigating the underlying reason of high death rates in these countries.
 
-#### Plot
+****Plot****
 
 ```{r Visual1, fig.cap = "\\label{fig:Visual1}Annual Death rates from alcohol", echo = FALSE, warning = FALSE, message = FALSE}
 # Load world map data
@@ -412,7 +408,7 @@ visual_1_interactive
 
 ```
 
-#### Table
+****Table****
 
 ```{r TableSummary1, echo = FALSE, warning = FALSE, message = FALSE}
 
@@ -432,7 +428,7 @@ table1
 ```
 
 
-### The numbers fluctuate, but we have seen some improvements. {.tabset}
+***The numbers fluctuate, but we have seen some improvements. {.tabset}***
 
 Table \@ref(tab:TableSummary2) shows the standard deviations of %death from alcohol per country from 2010-2019. Most countries with high variances also had high average %death rates such as Kazakhstan, Guatemala, Russia, Mongolia, etc.
 
@@ -445,7 +441,7 @@ Zooming in onto the global trends, we can see that:
 - Countries with low average annual %death from alcohol had more fluctuations and some even showed a slight increase.
 
 
-#### Plot
+****Plot****
 ```{r Visualtrend, fig.cap= "\\label{fig:Visualtrend}Changes of death rates from alcohol in selected countries 2010-2019", echo = FALSE, warning = FALSE, message = FALSE}
 # Classfy groups depending on the mean %death over 2010-2019
 data_rank <- data_init_mod %>%
@@ -501,7 +497,7 @@ visual_2_interactive
 
 ```
 
-#### Table
+****Table****
 ```{r TableSummary2, echo = FALSE, warning = FALSE, message = FALSE}
 data_table2 <- data_init_mod %>%
   filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
@@ -520,12 +516,11 @@ table2
 ```
 
 
-
-
-## Tony's section
-```{r}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+#Tony's section
 data <- read.csv("Merge_all_2010_2020_updated.csv")
 
+#wrangle data to only include specific regions and alcohol use disorders in males and females
 alc_sex_regions <- data %>% 
   dplyr::select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
          Prevalence_alcohol_use_disorders_female) %>%
@@ -534,6 +529,7 @@ alc_sex_regions <- data %>%
                        "European Region (WHO)", "United Kingdom", 
                        "United States"))
 
+#wrangle data to only include income groups and alcohol use disorders in males and females
 alc_sex_income <- data %>%
   dplyr::select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
          Prevalence_alcohol_use_disorders_female) %>%
@@ -542,13 +538,21 @@ alc_sex_income <- data %>%
                        "World Bank Upper Middle Income", "World Bank High Income"))
 ```
 
+**What are the variations in the prevalence of alcohol disorders among men and women across different income groups?**
 
+An association between income and alcohol disorders reveals noteworthy deviations from 2010 to 2019 but it is also important to consider the influence of other socioeconomic factors.
 
+There is a noticeable distinction between the high-income group and other income groups as illustrated in Figure \@ref(fig:IncomeGraph). The percentage of alcohol disorders in the high-income group is significantly greater when compared with other income groups especially among females. This may be a result of females in the high-income group subject to societal expectations or gender roles which lead to increased alcohol related issues. There is a consistent trend indicating a higher prevalence of alcohol disorders among individuals from the higher income groups possibly with work pressures. 
 
+Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors.
 
-# What are the variations in the prevalence of alcohol disorders among men and women across different income groups?
+When comparing the rate of alcohol use disorders in 2010 and 2019 as shown in \@ref(tab:IncomeTable), both males and females have similar trends. It can be noted there have been decrease in males with alcohol use disorders for the high income group and significantly in lower-middle income group by 0.14%. A parallel trend follows for females in the high and lower-middle income groups. Males in the high income group are approximately double the rate of females with alcohol disorders. However, when compared males and females in the other income groups, the rate of alcohol disorders in males are roughly 4 times the rates in females. 
 
-```{r, echo=FALSE}
+Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors. Furthermore, it is crucial to understand that the working population in each income group may be not accurate and the income brackets of each group may be skewed. Regardless of the data limitations, there are several variations in the prevalence of alcohol disorders among men and women across different income groups.
+
+```{r IncomeGraph, fig.cap="Percentage of males and females with alcohol use disorders across different income groups", echo = FALSE, warning = FALSE, message = FALSE}
+
+#create variable to plot male data across different income groups 
 male_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
   geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = Entity)) +
   labs(x = "Year", y = "% with alcohol use disorders", title = "Male", color = "Income Group") +
@@ -560,6 +564,7 @@ male_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
   scale_x_continuous(breaks = seq(2010, 2019, 2)) + 
   scale_y_continuous(breaks = seq(1.75, 3, 0.25))
 
+#create variable to plot female data across different income groups 
 female_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
   geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = Entity)) +
   labs(x = "Year", y = "% with alcohol use disorders", title = "Female", color = "Income Group") +
@@ -571,28 +576,32 @@ female_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
   scale_x_continuous(breaks = seq(2010, 2019, 2)) +
   scale_y_continuous(breaks = seq(0.4, 1.6, 0.2))
 
+#merge both male and female plots into one figure
 grid.arrange(male_income, female_income, ncol = 1)
 ```
 
-```{r, echo=FALSE}
+```{r IncomeTable, echo = FALSE, warning = FALSE, message = FALSE}
+#create data frame for only 2010 and 2019 data
 alc_sex_income_10_19 <- alc_sex_income %>%
   filter(Year %in% c(2010,2019))
 
-kable(alc_sex_income_10_19, caption = "% of Males and Females with Alcohol Use Disorders in 2010 and 2019")
+#create kable table to display data for 2010 and 2019 %
+kable(alc_sex_income_10_19, caption = "Percentage of males and females in different income groups with alcohol use disorders in 2010 and 2019")
 ```
 
-An association between income and alcohol disorders reveals noteworthy deviations from 2010 to 2019 but it is also important to consider the influence of other socioeconomic factors.
-There is a noticeable distinction between the high-income group and other income groups. The percentage of alcohol disorders is significantly greater or approximately doubled when compared with other income groups. Females in the high-income group may be subject to societal expectations or gender roles which lead to increased alcohol related issues. 
-There is a consistent trend indicating a higher prevalence of alcohol disorders among individuals from the higher income groups possibly with work pressures. Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors. 
+**What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?**
 
-# What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?
+By observing Figure \@ref(fig:RegionGraph), across all regions, it is clear there is a higher percentage of males with alcohol disorders than females and this statistic has not changed over the period 2010 to 2019. However, there is no evident similar trends between each region as there are various attributable factors such as evolving social norms, increased alcohol availability and alterations in cultural traditions. Regardless, there is an apparent upsurge over this period in the percentage males with alcohol issues are increasing in Australia, China and the United Kingdom. This is also noticeable among females in Australia but in other regions, there are insignificant increases or dips. 
 
-```{r, echo=FALSE}
+In Table \@ref(tab:RegionTab), the same deductions can be derived. It can be assumed with the an ever-increasing human population, the percentage of individuals with alcohol use disorders across different regions can differ drastically over the 2010 to 2019 period. Regardless of this limitation, it is evident alcohol is a significant problem in areas around the world especially when the population is increasing.
+
+```{r RegionGraph, fig.cap = "Percentage of males and females with alcohol use disorders among major regions from 2010 to 2019", echo = FALSE, warning = FALSE, message = FALSE}
+#create plot for males and females across different regions using facet_wrap
 ggplot(data = alc_sex_regions, aes(x = Year)) +
   geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = "Male")) +
   geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = "Female")) +
   labs(x = "Year", y = "% with alcohol use disorders", 
-       title = "% of Alcohol Disorders of each Major Region", 
+       title = "Percentage of Alcohol Disorders", 
        color = "Sex") +
    scale_color_manual(values = c("blue", "hot pink"),
                      labels = c("Male", "Female"),
@@ -603,12 +612,32 @@ ggplot(data = alc_sex_regions, aes(x = Year)) +
 
 ```
 
-```{r Table4, fig.cap = "\\label{fig:Table4}% of Males and Females with Alcohol Use Disorders for 2010 and 2019",echo = FALSE, warning = FALSE, message = FALSE}
+```{r RegionTab, echo = FALSE, warning = FALSE, message = FALSE}
+#create data frame for only 2010 and 2019 data
 alc_sex_regions_10_19 <- alc_sex_regions %>%
   filter(Year %in% c(2010,2019))
 
-kable(alc_sex_regions_10_19, caption = "% of Males and Females with Alcohol Use Disorders in 2010 and 2019")
+#create kable table to display data for 2010 and 2019 %
+kable(alc_sex_regions_10_19, caption = "Percentage of males and females in different regions with alcohol use disorders in 2010 and 2019")
+
 ```
 
-Across all regions, it is clear there is a higher percentage of males with alcohol disorders than females and this has not changed significantly over the period 2010 to 2019. However, there is no evident similar trends between each region as there are various attributable factors such as evolving social norms, increased alcohol availability and alterations in cultural traditions. Regardless, it is apparent over this period, males with alcohol issues are increasing in Australia, China and the United Kingdom. 
+
+**Conclusion** 
+It is evident alcohol use continues to be a significant problem today. Although the data used is a simple snippet during the period 2010 to 2019, there are various external factors providing such widespread results.
+
+Firstly, total alcohol consumption presented diverging trends over time, as some regions experienced growth while others declined.  Particularly, the Middle East, North Africa, and the Greater Indonesia region displayed consistency in low alcohol usage, which suggests a potential influence of religion given the prevalence of Islamic values in these countries. However, further information is needed to determine the relationship between religion and alcohol consumption.
+
+Secondly, it is clear both males and females in the high-income group have a higher percentage with alcohol use disorders. Additionally, the temporal trend in the prevalence of alcohol disorders across major regions have shown Australia, China and the UK to have significant rises in males with alcohol use orders with other regions showing minor decline. Furthermore, the rate of females with alcohol use disorders have not altered drastically.
+
+Thirdly, deaths from alcohol tend to be more prevalent in countries with cold and dry climates. However, social, cultural, and economic factors are more of our interest to investigate because, whereas we cannot do much about a country’s weather, we could understand what is causing people to drink too much, which would potentially allow us to design educational and addiction treatment programs to offer support.
+
+
+**Reference** 
+H, Ritchie and M, Roser. (2018) <i>Alcohol Consumption</i>. OurWorldInData.org. https://ourworldindata.org/alcohol-consumption' 
+
+
+
+
+
 
