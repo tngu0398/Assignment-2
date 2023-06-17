@@ -2,7 +2,7 @@
 title: "Alcohol"
 author: "Naveed Aamir"
 date: "`r Sys.Date()`"
-output: html_document
+output: bookdown::html_document2
 ---
 
 ```{r setup, include=FALSE}
@@ -19,6 +19,7 @@ install.packages("forecast", repos = "http://cran.us.r-project.org")
 install.packages("repr", repos = "http://cran.us.r-project.org")
 install.packages("lubridate", repos = "http://cran.us.r-project.org")
 install.packages("janitor", repos = "http://cran.us.r-project.org")
+install.packages("plotly", repos = "http://cran.us.r-project.org")
 # *****
 ```
 
@@ -34,6 +35,7 @@ library(forecast, quietly = T)
 library(repr, quietly = T)
 library(lubridate, quietly = T)
 library(janitor, quietly = T)
+library(plotly, quietly = T)
 # *****
 ```
 
@@ -58,7 +60,7 @@ alcohol <- read.csv("Data/alcohol.csv")
 
 - Do people with higher income consume more alcohol and how does the consumption of alcohol vary with an increase in income?
 
-```{r}
+```{r plot1, fig.cap="plot1"}
 
 options(scipen = 999)
 
@@ -70,10 +72,20 @@ alcohol3 <- na.omit(alcohol2)
 
 # scatter plot of consumption per person vs income
 sp <- ggplot(data = alcohol3, aes(x = GDP_per_capita, y = Total_alcohol_consumption_per_capita)) +
-  geom_point()
+  geom_point() + labs(title = "Pure Alcohol Consumption per person with Income",x = "GDP Per Capita (USD)",y = "Pure Alcohol Consumption per Capita (Litres)",subtitle = "Consumption of alcohol per person increases with Income and eventually becomes constant", caption = "Alcohol Consumption Data 2000-2020")
 
-sp
 
+
+spi <- ggplotly(sp) %>% layout(title = list(text = paste0("Variation in Pure Alcohol Consumption per person with Income",
+                                                          "<br>",
+                                                          "<sup>",
+                                                          "Consumption of alcohol per person increases with Income and eventually becomes constant",
+                                                          "</sup>")), x = "Income per person (USD)", y = "Pure Alcohol Consumption per person (Litres)",
+                               annotations = list(x=1, y=-0.1, text = "Alcohol Consumption Data 2000-2020", showarrow = F, xref = 'paper', yref = 'paper', xanchor = 'right', yanchor = 'auto', xshift = 0, yshift = 0, font = list(size=10, colour="red")))
+spi
+# *****
+```
+```{r plot2, fig.cap="plot2"}
 # Fit a simple linear regression model of consumption per person on income
 con_fit <- lm(Total_alcohol_consumption_per_capita~GDP_per_capita, data=alcohol3)
 #tidy(con_fit)
@@ -82,55 +94,64 @@ con_model <- augment(con_fit, alcohol3)
 
 # Fitting the estimated model over the data
 con_mod <- ggplot(con_model, aes(x=GDP_per_capita, y=Total_alcohol_consumption_per_capita)) + 
-  geom_point() +
-  geom_line(aes(y=.fitted), colour="blue")
+  geom_point() + labs(title = "Linear Model of Pure Alcohol Consumption per person on Income",x = "GDP Per Capita (USD)",y = "Pure Alcohol Consumption per Capita (Litres)",subtitle = "The relationship between Consumption per person and Income is not linear", caption = "Alcohol Consumption Data 2000-2020") + geom_line(aes(y=.fitted), colour="blue")
+  
+con_modi <- ggplotly(con_mod) %>% layout(title = list(text = paste0("Linear Model of Pure Alcohol Consumption per person on Income",
+                                                          "<br>",
+                                                          "<sup>",
+                                                          "The relationship between Consumption per person and Income is not linear",
+                                                          "</sup>")), x = "GDP Per Capita (USD)", y = "Pure Alcohol Consumption per person (Litres)",
+                               annotations = list(x=1, y=-0.1, text = "Alcohol Consumption Data 2000-2020", showarrow = F, xref = 'paper', yref = 'paper', xanchor = 'right', yanchor = 'auto', xshift = 0, yshift = 0, font = list(size=10, colour="red")))
 
 options(scipen = 999)
-con_mod
-
-#con_modi <- ggplotly(con_mod)
-#con_modi
+con_modi
 # *****
+```
 
-
+```{r summarytable1, tab.cap="summarytable1"}
 # Summary of the fitted linear regression model
 con_lin_fit <- lm(formula = Total_alcohol_consumption_per_capita ~ GDP_per_capita, data = alcohol3)
 
 # Return a summary of the fitted linear regression model
 summary(con_lin_fit)
+# *****
+```
 
+```{r}
 # Examine outliers
 alc_outliers <- arrange(alcohol3, desc(Total_alcohol_consumption_per_capita))
+# *****
+```
 
+```{r SummaryTable2}
 # Table that displays five countries each for both highest gdp per capita and lowest gdp per capita
 alcohol10 <- arrange(alcohol3, desc(GDP_per_capita))
 
 alcohol_gdp <- filter(alcohol10, Entity %in% c("Switzerland", "Brunei", "United Arab Emirates", "Norway", "United States", "Burundi", "Central African Republic", "Democratic Republic of Congo", "Somalia", "Mozambique"))
 
-alcohol_gdp
-
+knitr::kable(alcohol_gdp, caption = "Some countries with one of the highest and lowest GDP Per Capita and their corresponding alcohol consummption per capita")
 # *****
 ```
 
-- The scatter plot in fig X does show that, in general, consumption of alcohol is found to be higher for people with higher income.
+- The scatter plot in (Figure \@ref(fig:plot1)) does show that, in general, consumption of alcohol is found to be higher for people with higher income.
 
 - At first, the consumption of alcohol increases exponentially as income increases and then becomes approximately constant around and beyond a GDP Per Capita of USD 20000.
 
-- The fitted simple linear regression model of consumption per person on income shows that for an increase of USD 1000 in income the consumption of alcohol per person increases by 105.2 ml
+- The summary table of the linear regression model of consumption per person on income in shows that for an increase of USD 1000 in income the consumption of alcohol per person increases by 105.2 ml
 
 - The overall p-value and the one for the variable GDP Per Capita is much lower than the usual significance level of 5%. which shows that alcohol consumption per person is dependant on income.
 
 - However, the linear regression model only explains about 18.13% of the variation in alcohol consumption per person, which suggests that the relationship between alcohol consumption per person and income may not be linear and the model is not very accurate.
 
-- This is confirmed by the plot of the fitted linear regression model in fig Y, which also shows that most of the observations lie above the line of best fit and suggests a curved relationship instead.
+- This is confirmed by the plot of the fitted linear regression model in (Figure \@ref(fig:plot2)), which also shows that most of the observations lie above the line of best fit and suggests a curved relationship instead.
 
 - Therefore, the relationship is not linear and the model can be optimized further.
 
-- With a GDP Per Capita of approximately USD 27500, Seychelles is an outlier and has the highest alcohol consumption per person of 20.5 L, further research may confirm if this because Seychelles is a very popular tourist and retirement spot.
+- With a GDP Per Capita of approximately USD 27500, Seychelles is an outlier Ritchie et al. [2018]. and has the highest alcohol consumption per person of 20.5 L, further research may confirm if this because Seychelles is a very popular tourist and retirement spot.
 
-- With a GDP Per Capita of approximately USD 27600, Malaysia is also an outlier and has one of the lowest alcohol consumption per person of 0.85 L, further research may confirm if this because of religious influence, lack of preference and a lack of affordability in Malaysia.
+- With a GDP Per Capita of approximately USD 27600, Malaysia is also an outlier Ritchie et al. [2018]. and has one of the lowest alcohol consumption per person of 0.85 L, further research may confirm if this because of religious influence, lack of preference and a lack of affordability in Malaysia.
 
-- The table in fig Z shows countries with various GDP Per Capita and reiterates the fact that countries with higher income such as Switzerland, Norway and the United States have a higher alcohol consumption per person compared to countries with lower income such as Congo, Somalia and Mozambique. This table also confirms the earlier analysis that after a particular income level the alcohol consumption per person is relatively constant.
+- The table in \@ref(tab:SummaryTable2) shows countries with various GDP Per Capita and reiterates the fact that countries with higher income such as Switzerland, Norway and the United States have a higher alcohol consumption per person compared to countries with lower income such as Congo, Somalia and Mozambique. This table also confirms the earlier analysis that after a particular income level the alcohol consumption per person is relatively constant.
 
 - However, further research into the outlier Burundi with a GDP Per Capita of approximately only USD 800 but a nearly 400% higher alcohol consumption per person compared to the other lower income countries mentioned above, may suggest it to be the result of cultural influence.
 
@@ -158,31 +179,59 @@ summary(death_m)
 # *****
 ```
 
-```{r}
+```{r plotA, fig.cap="plotA"}
 # % death in alcohol use disorders vs alcohol consumption per capita
 sp_death_con <- ggplot(data = alcohol, aes(x = Total_alcohol_consumption_per_capita, y = Death_alcohol_use_disorders)) +
-  geom_point()
+  geom_point() + labs(title = "Variation in death in alcohol use disorders",x = "Pure Alcohol Consumption per Capita (Litres)",y = "Death in alcohol use disorders(%)",subtitle = "Percentage death increases with an increase in alcohol consumption per person", caption = "Alcohol Consumption Data 2000-2020")
 
-sp_death_con
+
+
+sp_death_coni <- ggplotly(sp_death_con) %>% layout(title = list(text = paste0("Variation in death in alcohol use disorders",
+                                                          "<br>",
+                                                          "<sup>",
+                                                          "Percentage death increases with an increase in alcohol consumption per person",
+                                                          "</sup>")), x = "Pure Alcohol Consumption per Capita (Litres)", y = "Death in alcohol use disorders(%)",
+                               annotations = list(x=1, y=-0.1, text = "Alcohol Consumption Data 2000-2020", showarrow = F, xref = 'paper', yref = 'paper', xanchor = 'right', yanchor = 'auto', xshift = 0, yshift = 0, font = list(size=10, colour="red")))
+
+
+sp_death_coni
 ```
 
-```{r}
+```{r plotB, fig.cap="plotB"}
 # % death in alcohol use disorders vs GDP Per Capita
 sp_death_gdp <- ggplot(data = alcohol, aes(x = GDP_per_capita, y = Death_alcohol_use_disorders)) +
-  geom_point()
+  geom_point() + labs(title = "Variation in death in alcohol use disorders with increase in income",x = "GDP Per Capita (USD)",y = "Death in alcohol use disorders(%)",subtitle = "Percentage death decreases with an increase in GDP Per Capita", caption = "Alcohol Consumption Data 2000-2020")
 
-sp_death_gdp
+sp_death_gdpi <- ggplotly(sp_death_gdp) %>% layout(title = list(text = paste0("Variation in death in alcohol use disorders with increase in income",
+                                                          "<br>",
+                                                          "<sup>",
+                                                          "Percentage death decreases with an increase in GDP Per Capita",
+                                                          "</sup>")), x = "GDP Per Capita (USD)", y = "Death in alcohol use disorders(%)",
+                               annotations = list(x=1, y=-0.1, text = "Alcohol Consumption Data 2000-2020", showarrow = F, xref = 'paper', yref = 'paper', xanchor = 'right', yanchor = 'auto', xshift = 0, yshift = 0, font = list(size=10, colour="red")))
+
+
+sp_death_gdpi
+# *****
 ```
 
-```{r}
+```{r plotC, fig.cap="plotC"}
 # % death in alcohol use disorders vs household alcohol expense
 sp_death_exp <- ggplot(data = alcohol, aes(x = Alcohol_expenditure_rate_per_household, y = Death_alcohol_use_disorders)) +
-  geom_point()
+  geom_point() + labs(title = "Variation in death in alcohol use disorders with increase in household alcohol expense",x = "Household Alcohol Expense (%)",y = "Death in alcohol use disorders(%)",subtitle = "Percentage death increases with an increase in houeshold alcohol expense", caption = "Alcohol Consumption Data 2000-2020")
 
-sp_death_exp
+sp_death_expi <- ggplotly(sp_death_exp) %>% layout(title = list(text = paste0("Variation in death in alcohol use disorders with increase in household alcohol expense",
+                                                          "<br>",
+                                                          "<sup>",
+                                                          "Percentage death increases with an increase in houeshold alcohol expense",
+                                                          "</sup>")), x = "Household Alcohol Expense (%)", y = "Death in alcohol use disorders(%)",
+                               annotations = list(x=1, y=-0.1, text = "Alcohol Consumption Data 2000-2020", showarrow = F, xref = 'paper', yref = 'paper', xanchor = 'right', yanchor = 'auto', xshift = 0, yshift = 0, font = list(size=10, colour="red")))
+
+
+sp_death_expi
+# *****
 ```
 
-```{r}
+```{r SummaryTableA}
 # countries in 2015
 countries_2015 <- filter(alcohol, Year == 2015) %>% select(Entity, Death_alcohol_use_disorders, Total_alcohol_consumption_per_capita, GDP_per_capita, Alcohol_expenditure_rate_per_household) 
 
@@ -190,33 +239,33 @@ countries_2015 <- filter(alcohol, Year == 2015) %>% select(Entity, Death_alcohol
 countries_deaths <- filter(countries_2015, Death_alcohol_use_disorders >= 12.5, Death_alcohol_use_disorders <= 22) 
 
 countries_deaths_highest <-  arrange(countries_deaths, desc(Death_alcohol_use_disorders))
-countries_deaths_highest
 
+knitr::kable(countries_deaths_highest, caption = "The top 7 countries with the highest percentage of deaths in alcohol use disorders in 2015")
 
 # *****
 ```
 
 - The Multiple Linear Regression model of percentage death (in alcohol use disorders) regressed on consumption, income and household alcohol expense has been used to investigate Question 2.
 
-- The model summary table in Fig A, shows that a 1 Litre increase in annual pure alcohol consumption per person increases the death percentage in alcohol use disorder by 1.122%.
+- The model summary table, shows that a 1 Litre increase in annual pure alcohol consumption per person increases the death percentage in alcohol use disorder by 1.179%.
 
-- However, an increase of USD 10000 in GDP Per Capita decreases the percentage death in alcohol use disorder by 0.72% and an increase of 1% in the weekly household alcohol expense decreases the percentage death in alcohol use disorder by 0.15%
+- However, an increase of USD 10000 in GDP Per Capita decreases the percentage death in alcohol use disorder by 1.5% and an increase of 1% in the weekly household alcohol expense increases the percentage death in alcohol use disorder by 0.5%
 
 - The overall p-value is lower than the usual significance value of 5%, which suggests that percentage death in alcohol use disorders is dependant on the predictors present in the model. 
 
-- The Multiple R-Squared value in the model summary table shows that the model explains 45% of the variation in percentage deaths in alcohol use disorders. Therefore, the model may be considered to be accurate, however, there is space for improvement.
+- The Multiple R-Squared value in the model summary table shows that the model explains 56.65% of the variation in percentage deaths in alcohol use disorders. Therefore, the model may be considered to be accurate, however, there is space for improvement.
 
-- The scatter plot of deaths from alcohol use disorders vs alcohol consumption per person shows that at first the percentage death increases slightly with an increase in consumption but then it increases exponentially beyond approximately 7.5 litres.
+- The scatter plot in (Figure \@ref(fig:plotA)) of deaths from alcohol use disorders vs alcohol consumption per person shows that at first the percentage death increases slightly with an increase in consumption but then it increases exponentially beyond approximately 7.5 litres.
 
-- The scatter plot of deaths from alcohol use disorders vs GDP Per Capita shows that the percentage death is higher for countries with low GDP Per Capita and then the percentage death decreases exponentially as GDP Per Capita increases till it eventually almost becomes constant.
+- The scatter plot in (Figure \@ref(fig:plotB)) of deaths from alcohol use disorders vs GDP Per Capita shows that the percentage death is higher for countries with low GDP Per Capita and then the percentage death decreases exponentially as GDP Per Capita increases till it eventually almost becomes constant.
 
 - Further research may determine whether this decline in percentage deaths may be a result of the ***availability of safer and better quality alcohol for consumption, better individual health, quality of healthcare and affordability of better healthcare***. These may also be some of the **additional predictors** that may help explain the remaining 55% of variation in deaths from alcohol use disorders.
 
-- The scatter plot of deaths from alcohol use disorders vs household alcohol expense shows that the percentage death is about constant at first but then increases exponentially beyond a household alcohol expense of 1.5%. This is contrary to the earlier description of the relationship between the same two variables by the Multiple Linear Regression model. Some of the observed outliers may be a result of the **additional predictors** mentioned above. This scatter plot is also reflective of the deaths from alcohol use disorders vs alcohol consumption per person in Fig B and, therefore, reaffirms that percentage death is dependant on the alcohol consumption per person.
+- The scatter plot in (Figure \@ref(fig:plotC)) of deaths from alcohol use disorders vs household alcohol expense shows that the percentage death is about constant at first but then increases exponentially beyond a household alcohol expense of 1.5%. This is contrary to the earlier description of the relationship between the same two variables by the Multiple Linear Regression model. Some of the observed outliers may be a result of the **additional predictors** mentioned above. This scatter plot is also reflective of the deaths from alcohol use disorders vs alcohol consumption per person in Fig B and, therefore, reaffirms that percentage death is dependant on the alcohol consumption per person.
 
-- The above scatter plots also help explain why the Multiple Linear Regression model used explains only 45% of the variation in percentage deaths in alcohol use orders because the relation between the dependant and independant variables does not appear to be linear. Therefore, the model should be optimized further.
+- The above scatter plots also help explain why the Multiple Linear Regression model used explains only approximately 57% of the variation in percentage deaths in alcohol use orders because the relation between the dependant and independant variables does not appear to be linear. Therefore, the model should be optimized further.
 
-- The table in Fig C, shows two of the outliers El Salvador and Gautemala, both of which had one of the highest percentage deaths in alcohol use disorders in 2015 but one of the lowest alcohol consumption per capita of 3.59 litres and 2.55 litres respectively. Further research may help determine whether some of the **additional predictors** mentioned above such as consumption of unsafe and low quality alcohol, comparatively poorer individual health, lack of quality and affordable healthcare contributed to the high percentage of deaths in alchol use disorders for these countries.  
+- The table in \@ref(tab:SummaryTableA), shows two of the outliers El Salvador and Gautemala, both of which had one of the highest percentage deaths in alcohol use disorders in 2015 but one of the lowest alcohol consumption per capita of 3.59 litres and 2.55 litres respectively. Further research may help determine whether some of the **additional predictors** mentioned above such as consumption of unsafe and low quality alcohol, comparatively poorer individual health, lack of quality and affordable healthcare contributed to the high percentage of deaths in alcohol use disorders for these countries.  
 
 
 
