@@ -83,6 +83,7 @@ Alcohol usage is a common occurrence in today's society, however the consumption
 
 While it is commonly assumed males are the primary consumers of alcohol, this report goes beyond geographical considerations and investigates the prevalence of alcohol disorders among both males and females across various income groups. The aim is to identify any variations and temporal trends in alcohol-related issues.
 
+
 *Question 1*
 
 -   How has the total alcohol consumption per capita changed over time in relation to geographical regions?
@@ -632,6 +633,7 @@ It is evident alcohol use continues to be a significant problem today. Although 
 Firstly, total alcohol consumption presented diverging trends over time, as some regions experienced growth while others declined.  Particularly, the Middle East, North Africa, and the Greater Indonesia region displayed consistency in low alcohol usage, which suggests a potential influence of religion given the prevalence of Islamic values in these countries. However, further information is needed to determine the relationship between religion and alcohol consumption.
 
 Secondly, it is clear both males and females in the high-income group have a higher percentage with alcohol use disorders. Additionally, the temporal trend in the prevalence of alcohol disorders across major regions have shown Australia, China and the UK to have significant rises in males with alcohol use orders with other regions showing minor decline. Furthermore, the rate of females with alcohol use disorders have not altered drastically.
+
 
 **Reference** 
 H, Ritchie and M, Roser. (2018) <i>Alcohol Consumption</i>. OurWorldInData.org. https://ourworldindata.org/alcohol-consumption' 

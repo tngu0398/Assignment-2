@@ -1,0 +1,7 @@
+@article{owidalcoholconsumption,
+    author = {Hannah Ritchie and Max Roser},
+    title = {Alcohol Consumption},
+    journal = {Our World in Data},
+    year = {2018},
+    note = {https://ourworldindata.org/alcohol-consumption}
+}
