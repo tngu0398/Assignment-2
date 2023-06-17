@@ -50,6 +50,7 @@ newExtractedData = na.omit(extractedData)
 ```
 
 **Introduction**
+The following report explores
 
 *Question 1*
 
