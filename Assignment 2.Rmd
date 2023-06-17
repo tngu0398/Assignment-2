@@ -112,33 +112,17 @@ table1
 
 Table \@ref(tab:TableSummary2) shows the standard deviations of %death from alcohol per country from 2010-2019. Most countries with high variances also had high average %death rates such as Kazakhstan, Guatemala, Russia, Mongolia, etc.
 
-In figure \@ref(fig:Visualtrend), rate groups are classified by the average annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top 5 countries are shown in each group. Note that the y axis are different in each subplot. (This is to illustrate the trends in each group.) Zooming in onto the global trends, we can see that:
+In figure \@ref(fig:Visualtrend), rate groups are classified by the average annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top 5 countries are shown in each group. Note that the y axis are different in each subplot. (This is to illustrate the trends in each group.)
 
--Most countries with both medium and high average annual %death from alcohol showed some improvements with a decreased %death rate.
+Zooming in onto the global trends, we can see that:
 
--Countries with low average annual %death from alcohol had more flutuations and some even showed a slight increase.
+- Most countries with both medium and high average annual %death from alcohol showed some improvements with a decreased %death rate.
 
+- Countries with low average annual %death from alcohol had more fluctuations and some even showed a slight increase.
 
-#### Table
-```{r TableSummary2, echo = FALSE, warning = FALSE, message = FALSE}
-data_table2 <- data_init_mod %>%
-  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
-  group_by(Entity) %>%
-  summarize(Standard_deviation = sd(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
-  arrange(desc(Standard_deviation)) %>%
-  top_n(20)
-
-# Make the table
-table2 <- knitr::kable(data_table2,
-                       digits = 2,
-                       caption = "The top 20 countries with highest variance in number of death caused by alcohol use disorders.")
-
-table2
-
-```
 
 #### Plot
-```{r Visual_trend, fig.cap= "Visualtrend", echo = FALSE, warning = FALSE, message = FALSE}
+```{r Visualtrend, fig.cap= "Visualtrend", echo = FALSE, warning = FALSE, message = FALSE}
 # Classfy groups depending on the mean %death over 2010-2019
 data_rank <- data_init_mod %>%
   group_by(Entity) %>%
@@ -172,25 +156,42 @@ visual2 <- data_rank2 %>%
   filter(Year > "2009") %>%
   filter(Entity %in% head(data_rank_high$Entity, 10)|Entity %in% head(data_rank_medium$Entity, 10)|Entity %in% head(data_rank_low$Entity, 10)) %>%
   filter(!is.na(Death_alcohol_use_disorders)) %>%
-  ggplot(aes(x = as.integer(Year), y = Death_alcohol_use_disorders, group = Entity, color = rategroup)) +
+  ggplot(aes(x = as.character(Year), y = Death_alcohol_use_disorders, group = Entity, color = rategroup)) +
   geom_line() +
   scale_color_manual(values=c("#FAA19B", "#f66257", "#b73229"))+
   facet_grid(rategroup~., scales = "free") +
-  xlab("Year") +
-  ylab("%Death from alcohol") +
-  ggtitle("Death changes from alcohol use disorders 2010-2019 per group")
+  xlab("") +
+  ylab("%Death from alcohol")
 
 visual_2_interactive <- ggplotly(visual2) %>%
-  layout(title = list(text = paste0("Changes of death from alcohol over 2010-2019",
+  layout(title = list(text = paste0("Death changes from alcohol use disorders 2010-2019 per group",
                                     "<br>",
                                     "<sup>")),
          annotations = list(x = 1, y = -0.1, text = "Data retreived from https://ourworldindata.org/alcohol-consumption.",
                          showarrow = F, xref='paper', yref='paper',
                          xanchor='right', yanchor='auto',
                          xshift=0, yshift=0,
-                         font=list(size=15, color="Black")))
+                         font=list(size=10, color="Black")))
 
 visual_2_interactive
+
+```
+
+#### Table
+```{r TableSummary2, echo = FALSE, warning = FALSE, message = FALSE}
+data_table2 <- data_init_mod %>%
+  filter(!is.na(Death_alcohol_use_disorders) & !Year %in% c("2000", "2005")) %>%
+  group_by(Entity) %>%
+  summarize(Standard_deviation = sd(Death_alcohol_use_disorders, na.rm = TRUE)) %>%
+  arrange(desc(Standard_deviation)) %>%
+  top_n(20)
+
+# Make the table
+table2 <- knitr::kable(data_table2,
+                       digits = 2,
+                       caption = "The top 20 countries with highest variance in number of death caused by alcohol use disorders.")
+
+table2
 
 ```
 
