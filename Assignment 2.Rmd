@@ -7,6 +7,15 @@ output:
   fig_caption: yes
 ---
 
+
+```{r}
+install.packages("rnaturalearth")
+install.packages("dslabs")
+install.packages("rnaturalearthdata")
+
+```
+
+
 ```{r LoadLibrary}
 library(tidyverse)
 library(plotly)
@@ -51,6 +60,7 @@ data_init_mod <- data_init %>%
 
 *Jane's Section* 
 
+
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
 # read in data set 
@@ -69,6 +79,7 @@ newExtractedData = na.omit(extractedData)
 ```
 
 **Introduction**
+Alcohol usage is a common occurrence in today's society, however the consumption amount varies across geographical regions and can be influenced by different factors. The report explores the relationship between total alcohol consumption and the geographical regions, as well as the significant influence of religion in alcohol usage globally.   
 
 While it is commonly assumed males are the primary consumers of alcohol, this report goes beyond geographical considerations and investigates the prevalence of alcohol disorders among both males and females across various income groups. The aim is to identify any variations and temporal trends in alcohol-related issues.
 
@@ -508,10 +519,8 @@ table2
 ```
 
 
-
-
-## Tony's section
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
+#Tony's section
 data <- read.csv("Merge_all_2010_2020_updated.csv")
 
 #wrangle data to only include specific regions and alcohol use disorders in males and females
@@ -532,7 +541,7 @@ alc_sex_income <- data %>%
                        "World Bank Upper Middle Income", "World Bank High Income"))
 ```
 
-### What are the variations in the prevalence of alcohol disorders among men and women across different income groups?
+**What are the variations in the prevalence of alcohol disorders among men and women across different income groups?**
 
 An association between income and alcohol disorders reveals noteworthy deviations from 2010 to 2019 but it is also important to consider the influence of other socioeconomic factors.
 
@@ -583,7 +592,7 @@ alc_sex_income_10_19 <- alc_sex_income %>%
 kable(alc_sex_income_10_19, caption = "Percentage of males and females in different income groups with alcohol use disorders in 2010 and 2019")
 ```
 
-### What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?
+**What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?**
 
 By observing Figure \@ref(fig:RegionGraph), across all regions, it is clear there is a higher percentage of males with alcohol disorders than females and this statistic has not changed over the period 2010 to 2019. However, there is no evident similar trends between each region as there are various attributable factors such as evolving social norms, increased alcohol availability and alterations in cultural traditions. Regardless, there is an apparent upsurge over this period in the percentage males with alcohol issues are increasing in Australia, China and the United Kingdom. This is also noticeable among females in Australia but in other regions, there are insignificant increases or dips. 
 
@@ -616,6 +625,16 @@ kable(alc_sex_regions_10_19, caption = "Percentage of males and females in diffe
 
 ```
 
-## Conclusion
+
+**Conclusion** 
+It is evident alcohol use continues to be a significant problem today. Although the data used is a simple snippet during the period 2010 to 2019, there are various external factors providing such widespread results.
+
+Firstly, total alcohol consumption presented diverging trends over time, as some regions experienced growth while others declined.  Particularly, the Middle East, North Africa, and the Greater Indonesia region displayed consistency in low alcohol usage, which suggests a potential influence of religion given the prevalence of Islamic values in these countries. However, further information is needed to determine the relationship between religion and alcohol consumption.
 
 Secondly, it is clear both males and females in the high-income group have a higher percentage with alcohol use disorders. Additionally, the temporal trend in the prevalence of alcohol disorders across major regions have shown Australia, China and the UK to have significant rises in males with alcohol use orders with other regions showing minor decline. Furthermore, the rate of females with alcohol use disorders have not altered drastically.
+
+**Reference** 
+H, Ritchie and M, Roser. (2018) <i>Alcohol Consumption</i>. OurWorldInData.org. https://ourworldindata.org/alcohol-consumption' 
+
+
+
