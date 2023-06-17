@@ -9,24 +9,91 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+```{r}
+library(tidyverse)
+library(knitr)
+library(scales)
+library(dplyr)
+library(gridExtra)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+data <- read.csv("Merge_all_2010_2020_updated.csv")
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+alc_sex_regions <- data %>%
+  select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
+         Prevalence_alcohol_use_disorders_female) %>%
+  na.omit() %>%
+  filter(Entity %in% c("African Region (WHO)", "Australia", "China", 
+                       "European Region (WHO)", "United Kingdom", 
+                       "United States"))
 
-```{r cars}
-summary(cars)
+alc_sex_income <- data %>%
+  select(Entity, Year, Prevalence_alcohol_use_disorders_male, 
+         Prevalence_alcohol_use_disorders_female) %>%
+  na.omit() %>%
+  filter(Entity %in% c("World Bank Low Income", "World Bank Lower Middle Income", 
+                       "World Bank Upper Middle Income", "World Bank High Income"))
 
-print(cars)
 ```
 
-## Including Plots
+#What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?
 
-You can also embed plots, for example:
+```{r}
+ggplot(data = alc_sex_regions, aes(x = Year)) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = "Male")) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = "Female")) +
+  labs(x = "Year", y = "% with alcohol use disorders", 
+       title = "% of Alcohol Disorders of each Major Region", 
+       color = "Sex") +
+   scale_color_manual(values = c("blue", "hot pink"),
+                     labels = c("Male", "Female"),
+                     breaks = c("Male", "Female")) + 
+  theme(legend.position = "right", plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(2010, 2019, 2)) + 
+  facet_wrap(~ Entity, ncol = 2, scales = "free_y")
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```
+```{r}
+alc_sex_income_10_19 <- alc_sex_income %>%
+  filter(Year %in% c(2010,2019))
+
+kable(alc_sex_income_10_19, caption = "% of Males and Females with Alcohol Use Disorders in 2010 and 2019")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+#What are the variations in the prevalence of alcohol disorders among men and women across different income groups?
+
+```{r}
+male_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_male, color = Entity)) +
+  labs(x = "Year", y = "% with alcohol use disorders", title = "Male", color = "Income Group") +
+  scale_color_manual(values = c("blue", "green", "orange", "red"),
+                     labels = c("Low", "Lower Middle", "Upper Middle", "High"),
+                     breaks = c("World Bank Low Income", "World Bank Lower Middle Income", 
+                                "World Bank Upper Middle Income", "World Bank High Income")) +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(2010, 2019, 2)) + 
+  scale_y_continuous(breaks = seq(1.75, 3, 0.25))
+
+female_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
+  geom_line(aes(y = Prevalence_alcohol_use_disorders_female, color = Entity)) +
+  labs(x = "Year", y = "% with alcohol use disorders", title = "Female", color = "Income Group") +
+  scale_color_manual(values = c("blue", "green", "orange", "red"),
+                     labels = c("Low", "Lower Middle", "Upper Middle", "High"),
+                     breaks = c("World Bank Low Income", "World Bank Lower Middle Income", 
+                                "World Bank Upper Middle Income", "World Bank High Income")) +
+  theme(legend.position = "right", plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = seq(2010, 2019, 2)) +
+  scale_y_continuous(breaks = seq(0.4, 1.6, 0.2))
+
+grid.arrange(male_income, female_income, ncol = 1)
+
+
+```
+
+```{r}
+alc_sex_regions_10_19 <- alc_sex_regions %>%
+  filter(Year %in% c(2010,2019))
+
+kable(alc_sex_regions_10_19, caption = "% of Males and Females with Alcohol Use Disorders in 2010 and 2019")
+```
+
+
