@@ -44,13 +44,13 @@ Consuming too much alcohol and not being able to control drinking can harm an in
 
 Belarus and Mongolia had the highest __direct__ death rates (not including indirect death from suicide) of 21.80 and 17.05 per 100,000 people, respectively, followed by Russia, El Salvador, and Greenland (Table \@ref(tab:TableSummary1)).
 
-Most of the countries with high death rates are in the subarctic or arctic zones in the northern hemisphere (Figure \@ref(fig:Visual1)). This is in line with findings from Figure \@ref(fig:). The cold and dark climates in these countries might have contributed to this observation.
+Most of the countries with high death rates are in the subarctic or arctic zones in the northern hemisphere (Figure \@ref(fig:Visual1)). This is in line with findings from section 1. The cold and dark climates in these countries might have contributed to this observation.
 
 However, countries in hot and humid weather such as Guatemala and Brazil also had high death rates from alcohol abuse. Countries in the southern subarctic zone with high alcohol consumption levels only showed low to moderate death rates. Therefore, cultural, genetic, historical, and religious factors cannot be ignored when investigating the underlying reason of high death rates in these countries.
 
 #### Plot
 
-```{r Visual1, fig.cap = "Visual1", echo = FALSE, warning = FALSE, message = FALSE}
+```{r Visual1, fig.cap = "\\label{fig:Visual1}Annual Death rates from alcohol", echo = FALSE, warning = FALSE, message = FALSE}
 # Load world map data
 world<-map_data("world")
 
@@ -108,11 +108,11 @@ table1
 ```
 
 
-### The numbers flutuate, but we have seen some improvements. {.tabset}
+### The numbers fluctuate, but we have seen some improvements. {.tabset}
 
 Table \@ref(tab:TableSummary2) shows the standard deviations of %death from alcohol per country from 2010-2019. Most countries with high variances also had high average %death rates such as Kazakhstan, Guatemala, Russia, Mongolia, etc.
 
-In figure \@ref(fig:Visualtrend), rate groups are classified by the average annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top 5 countries are shown in each group. Note that the y axis are different in each subplot. (This is to illustrate the trends in each group.)
+In figure \@ref(fig:Visualtrend), rate groups are classified by the average annual %death rates over 2010-2019 into low (group1, <=1st quarter), medium (group2, <3rd quarter & >1st quarter) and high (group3, >=3st quarter). Only the top ten countries are shown in each group. __Note that the y axis are different in each subplot.__ This is to illustrate the trends in each group.
 
 Zooming in onto the global trends, we can see that:
 
@@ -122,7 +122,7 @@ Zooming in onto the global trends, we can see that:
 
 
 #### Plot
-```{r Visualtrend, fig.cap= "Visualtrend", echo = FALSE, warning = FALSE, message = FALSE}
+```{r Visualtrend, fig.cap= "\\label{fig:Visualtrend}Changes of death rates from alcohol in selected countries 2010-2019", echo = FALSE, warning = FALSE, message = FALSE}
 # Classfy groups depending on the mean %death over 2010-2019
 data_rank <- data_init_mod %>%
   group_by(Entity) %>%
