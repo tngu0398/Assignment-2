@@ -1,19 +1,11 @@
 ---
 title: "Assignment2_draft"
-author: "Shiyuan Zhang"
+author: "Naveed Aamir, Jane Nguyen, Tony Nguyen, Shiyuan Zhang"
 date: "2023-06-07"
 output: 
   bookdown::html_document2:
   fig_caption: yes
 ---
-
-
-```{r}
-install.packages("rnaturalearth")
-install.packages("dslabs")
-install.packages("rnaturalearthdata")
-
-```
 
 
 ```{r LoadLibrary}
@@ -53,7 +45,7 @@ data_init <- read.csv("Alcohol/Merge_all_2010_2020_updated.csv")
 
 #Subset dataset for the section
 data_init_mod <- data_init %>%
-  select(c("Entity", "Year", "Code", "Death_alcohol_use_disorders"))
+  c("Entity", "Year", "Code", "Death_alcohol_use_disorders")
 
 ```
 
@@ -289,7 +281,7 @@ plot(dataMap2018)
 
 **Table 2**
 
-Table 2 \@ref(tab:Table2) presents the lowest 10 countries in 2000, 2005, 2010, 2015 and 2018 in alcohol consumption
+Table \@ref(tab:Table2) presents the lowest 10 countries in 2000, 2005, 2010, 2015 and 2018 in alcohol consumption
 
 ```{r Table2, echo = FALSE, warning = FALSE, message = FALSE, error = FALSE}
 
