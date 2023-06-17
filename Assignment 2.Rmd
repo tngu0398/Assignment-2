@@ -5,11 +5,8 @@ date: "2023-06-07"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
-```{r, echo=FALSE}
+```{r setup, include=FALSE}
 library(tidyverse)
 library(knitr)
 library(scales)
@@ -32,10 +29,13 @@ alc_sex_income <- data %>%
   na.omit() %>%
   filter(Entity %in% c("World Bank Low Income", "World Bank Lower Middle Income", 
                        "World Bank Upper Middle Income", "World Bank High Income"))
-
 ```
 
-#What are the variations in the prevalence of alcohol disorders among men and women across different income groups?
+# Introduction
+
+
+
+# What are the variations in the prevalence of alcohol disorders among men and women across different income groups?
 
 ```{r, echo=FALSE}
 male_income <- ggplot(data = alc_sex_income, aes(x = Year)) +
@@ -74,7 +74,7 @@ An association between income and alcohol disorders reveals noteworthy deviation
 There is a noticeable distinction between the high-income group and other income groups. The percentage of alcohol disorders is significantly greater or approximately doubled when compared with other income groups. Females in the high-income group may be subject to societal expectations or gender roles which lead to increased alcohol related issues. 
 There is a consistent trend indicating a higher prevalence of alcohol disorders among individuals from the higher income groups possibly with work pressures. Interestingly, the income groups among both males and females both have the lower-middle income group with the lowest rate of alcohol disorders. This may be due to considerations such as lower financial stressors and mental and physical well-being. However, the low and upper-middle income groups have a higher rate particularly among the males. Similarly, this may be due to financial and work stressors. 
 
-#What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?
+# What is the temporal trend in the prevalence of alcohol disorders among men and women across major regions?
 
 ```{r, echo=FALSE}
 ggplot(data = alc_sex_regions, aes(x = Year)) +
